@@ -26,7 +26,6 @@ import numpy as np
 import csv
 import os
 import glob
-import shlex
 from datetime import datetime
 
 
@@ -75,31 +74,18 @@ def get_cpu_usage():
 # -----------------------------------------------------------------------------
 # External inference runner (detector.py)
 # -----------------------------------------------------------------------------
-def run_inference(framework, imgsz, frames, model, external_cmd, unit_scale):
-    """
-    Runs either the built-in detector.py OR your own script (--external-cmd),
-    then parses every 'inference time: <value>' line from stdout.
-
-    unit_scale converts the parsed value to milliseconds:
-      1.0    if the script already prints ms   (detector.py)
-      1000.0 if the script prints seconds       (your RKNN script)
-    """
-    if external_cmd:
-        # Your own command, run verbatim. --framework/--imgsz/--frames are
-        # ignored here (framework is just used as the CSV label).
-        cmd = shlex.split(external_cmd)
-    else:
-        script_path = os.path.join(os.path.dirname(__file__), "detector.py")
-        cmd = ["python3", script_path, "--framework", framework,
-               "--imgsz", str(imgsz), "--frames", str(frames)]
-        if model:
-            cmd += ["--model", model]
+def run_inference(framework, imgsz, frames, model):
+    script_path = os.path.join(os.path.dirname(__file__), "detector.py")
+    cmd = ["python3", script_path, "--framework", framework,
+           "--imgsz", str(imgsz), "--frames", str(frames)]
+    if model:
+        cmd += ["--model", model]
 
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, text=True)
     out, err = proc.communicate()
     if proc.returncode != 0:
-        raise RuntimeError(f"inference command failed (exit {proc.returncode}): {err}")
+        raise RuntimeError(f"detector.py failed (exit {proc.returncode}): {err}")
 
     durations = []
     for line in out.splitlines():
@@ -107,11 +93,11 @@ def run_inference(framework, imgsz, frames, model, external_cmd, unit_scale):
         if not line.startswith("inference time:"):
             continue
         try:
-            durations.append(float(line.split(":", 1)[1].strip().split()[0]) * unit_scale)
+            durations.append(float(line.split(":", 1)[1].strip().split()[0]))
         except (ValueError, IndexError):
             continue
     if not durations:
-        raise RuntimeError(f"No 'inference time:' lines parsed. stderr:\n{err}")
+        raise RuntimeError(f"No inference times parsed. stderr:\n{err}")
     return durations
 
 
@@ -142,8 +128,7 @@ def stop_stress(proc):
 # -----------------------------------------------------------------------------
 # One trial
 # -----------------------------------------------------------------------------
-def run_test(cpu_load, duration, framework, imgsz, frames, model,
-             temp_path, external_cmd, unit_scale):
+def run_test(cpu_load, duration, framework, imgsz, frames, model, temp_path):
     stress_proc = start_cpu_stress(cpu_load, duration)
     time.sleep(1)  # let the load ramp / heat build
 
@@ -152,8 +137,7 @@ def run_test(cpu_load, duration, framework, imgsz, frames, model,
     usage_start = get_cpu_usage()
 
     t0 = time.time()
-    arr = np.array(run_inference(framework, imgsz, frames, model,
-                                 external_cmd, unit_scale))  # normalized to ms
+    arr = np.array(run_inference(framework, imgsz, frames, model))  # already ms
     t1 = time.time()
 
     temp_end = get_cpu_temp(temp_path)
@@ -199,13 +183,6 @@ def main():
                         help="Frames timed per trial")
     parser.add_argument("--model", default=None,
                         help="Explicit model path passed to detector.py")
-    parser.add_argument("--external-cmd", default=None,
-                        help="Run YOUR OWN inference script instead of detector.py, "
-                             "e.g. --external-cmd \"python3 my_rknn_bench.py --model m.rknn --imgs ./imgs\". "
-                             "It must print 'inference time: <value>' per frame to stdout.")
-    parser.add_argument("--latency-unit", choices=["ms", "s"], default="ms",
-                        help="Unit your script prints in. Use 's' for the RKNN "
-                             "script (prints seconds); values are converted to ms.")
     parser.add_argument("--thermal-zone", type=int, default=None,
                         help="Force /sys/class/thermal/thermal_zoneN (skip auto-detect)")
     parser.add_argument("--output", default="benchmark_results.csv")
@@ -217,10 +194,6 @@ def main():
     else:
         temp_path, ztype = find_thermal_zone()
     print(f"[thermal] using {temp_path}  (type={ztype})")
-
-    unit_scale = 1000.0 if args.latency_unit == "s" else 1.0
-    if args.external_cmd:
-        print(f"[runner] external: {args.external_cmd}  (unit={args.latency_unit})")
 
     fieldnames = [
         "trial", "framework", "cpu_load_percent", "num_frames", "total_time_s",
@@ -237,8 +210,7 @@ def main():
                     print(f"[{datetime.now():%H:%M:%S}] trial {trial} | "
                           f"{framework} | load={cpu_load}%")
                     stats = run_test(cpu_load, args.duration, framework,
-                                     args.imgsz, args.frames, args.model, temp_path,
-                                     args.external_cmd, unit_scale)
+                                     args.imgsz, args.frames, args.model, temp_path)
                     stats["trial"] = trial
                     writer.writerow(stats)
                     csvfile.flush()
