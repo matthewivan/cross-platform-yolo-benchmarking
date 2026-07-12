@@ -18,32 +18,45 @@ from matplotlib.lines import Line2D
 
 # ---------------------------------------------------------------------------
 # CONFIG — add a board by adding one entry here. That's the whole change.
-#
-# Filenames are UNIFORM and generated automatically as:
-#     {slug}_benchmark_{res}.csv
-# e.g.  rpi_benchmark_640.csv,  khadas_benchmark_256.csv
-# So you only pick a short slug + a color; names can never drift out of sync.
 # ---------------------------------------------------------------------------
 BASE_PATH = "./"
 RESOLUTIONS = [256, 320, 640]
-NAME_TEMPLATE = "{slug}_benchmark_{res}.csv"
 
 BOARDS = {
-    "Pi Zero 2W":      {"slug": "rpi",    "color": "green"},
-    "Radxa Zero 3W":   {"slug": "radxa",  "color": "orange"},
-    "Khadas Edge 2":   {"slug": "khadas", "color": "blue"},
-    "Jetson AGX Orin": {"slug": "jetson", "color": "red"},
+    "Pi Zero 2W": {
+        "color": "green",
+        "files": {256: "rpi_benchmark_results_256model_correctms.csv",
+                  320: "rpi_benchmark_results_320model.csv",
+                  640: "rpi_benchmark_results_640model.csv"},
+    },
+    "Radxa Zero 3W": {
+        "color": "orange",
+        "files": {256: "radxa_10_benchmark_results_256model.csv",
+                  320: "radxa_10_benchmark_results_320model.csv",
+                  640: "radxa_10_benchmark_results_640model.csv"},
+    },
+    "Khadas Edge 2": {
+        "color": "blue",
+        "files": {256: "khadas_10_benchmark_256model.csv",
+                  320: "khadas_10_benchmark_320model.csv",
+                  640: "khadas_10_benchmark_640model.csv"},
+    },
+    "Jetson AGX Orin": {
+        "color": "red",
+        "files": {256: "jetson_10_benchmark_256model.csv",
+                  320: "jetson_10_benchmark_320model.csv",
+                  640: "jetson_10_benchmark_640model.csv"},
+    },
 }
-
-
-def csv_name(board, res):
-    return NAME_TEMPLATE.format(slug=BOARDS[board]["slug"], res=res)
 
 
 # ---------------------------------------------------------------------------
 def load_csv(board, res):
     """Return the DataFrame for a board+res, or None if the CSV is missing."""
-    path = os.path.join(BASE_PATH, csv_name(board, res))
+    fname = BOARDS[board]["files"].get(res)
+    if not fname:
+        return None
+    path = os.path.join(BASE_PATH, fname)
     if not os.path.exists(path):
         print(f"[skip] missing {path}")
         return None
@@ -121,16 +134,7 @@ def scatter_latency_vs_temp(res, boards=None):
     print(f"[wrote] {out}")
 
 
-def print_expected_files():
-    print("Expected CSV filenames (pattern: " + NAME_TEMPLATE + "):")
-    for board in BOARDS:
-        names = ", ".join(csv_name(board, r) for r in RESOLUTIONS)
-        print(f"  {board:16s} -> {names}")
-    print()
-
-
 def main():
-    print_expected_files()
     for res in RESOLUTIONS:
         boxplot_all_boards(res)
         scatter_latency_vs_temp(res)
