@@ -167,16 +167,12 @@ def post_process(input_data):
     return boxes, classes, scores
 
 
-def class_name(cl):
-    return CLASSES[cl] if 0 <= cl < len(CLASSES) else f"class_{cl}"
-
-
 def draw(image, boxes, scores, classes):
     for box, score, cl in zip(boxes, scores, classes):
         top, left, right, bottom = [int(_b) for _b in box]
-        print("%s @ (%d %d %d %d) %.3f" % (class_name(cl), top, left, right, bottom, score))
+        print("%s @ (%d %d %d %d) %.3f" % (CLASSES[cl], top, left, right, bottom, score))
         cv2.rectangle(image, (top, left), (right, bottom), (255, 0, 0), 2)
-        cv2.putText(image, '{0} {1:.2f}'.format(class_name(cl), score),
+        cv2.putText(image, '{0} {1:.2f}'.format(CLASSES[cl], score),
                     (top, left - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 
@@ -190,23 +186,24 @@ def img_check(path):
 # ===========================================================================
 # ONNX-specific bits
 # ===========================================================================
-def organize_outputs(outputs):
+def organize_outputs(outputs, num_classes):
     """
-    Reorder branches into what post_process expects, regardless of how
-    onnxruntime ordered them and regardless of 2-per-branch (box,cls) or
-    3-per-branch (box,cls,score) exports.
-
-    Group tensors by spatial size (H,W), then within each group sort by channel
-    count DESCENDING -> [box(64), cls(nc), score(1)]. post_process indexes
-    box at pair*i and cls at pair*i+1, so this ordering is correct for both
-    6-output and 9-output models.
+    onnxruntime may return the 6 branches in a different order than RKNN.
+    Reconcile into the [box, cls, box, cls, box, cls] order post_process wants,
+    by matching each box branch to the class branch with the same H,W.
     """
-    groups = {}
+    box_branches, cls_branches = [], []
     for o in outputs:
-        groups.setdefault(tuple(o.shape[2:]), []).append(o)
+        (cls_branches if o.shape[1] == num_classes else box_branches).append(o)
+    if len(box_branches) != 3 or len(cls_branches) != 3:
+        raise RuntimeError(
+            f"Expected 3 box + 3 class branches (nc={num_classes}); got "
+            f"{len(box_branches)} box / {len(cls_branches)} class. "
+            f"Is this the rknn_model_zoo-style ONNX with 6 outputs?")
     ordered = []
-    for key in sorted(groups, key=lambda k: k[0], reverse=True):  # big grid -> small
-        ordered += sorted(groups[key], key=lambda t: t.shape[1], reverse=True)
+    for b in box_branches:
+        match = next(c for c in cls_branches if c.shape[2:] == b.shape[2:])
+        ordered += [b, match]
     return ordered
 
 
@@ -227,6 +224,7 @@ def main():
 
     OBJ_THRESH, NMS_THRESH = args.conf, args.iou
     IMG_SIZE = (args.imgsz, args.imgsz)
+    num_classes = len(CLASSES)
 
     so = ort.SessionOptions()
     if args.threads > 0:
@@ -267,7 +265,7 @@ def main():
             # --- timed region: inference + post_process (same scope as RKNN) ---
             start_time = time.perf_counter()
             outputs = session.run(None, {input_name: blob})
-            outputs = organize_outputs(outputs)
+            outputs = organize_outputs(outputs, num_classes)
             boxes, classes, scores = post_process(outputs)
             inference_time = time.perf_counter() - start_time
 
@@ -277,7 +275,7 @@ def main():
             if boxes is not None:
                 real = co_helper.get_real_box(boxes)
                 for box, score, cl in zip(real, scores, classes):
-                    print(f"{class_name(cl)}: {score}")
+                    print(f"{CLASSES[cl]}: {score}")
                 if args.save:
                     img_p = img_src.copy()
                     draw(img_p, real, scores, classes)
