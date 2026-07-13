@@ -45,11 +45,9 @@ from py_utils.coco_utils import COCO_test_helper
 # ---- thresholds (overridable via CLI; kept as globals like your script) ----
 OBJ_THRESH = 0.25
 NMS_THRESH = 0.45
-IMG_SIZE = (256, 256)  # (w, h) — set from --imgsz
+IMG_SIZE = (640, 640)  # (w, h) — set from --imgsz
 
-CLASSES = ('Green_Balloon', 'Orange_Circle_GShape', 'Orange_Square_GShape',
-           'Orange_Triangle_Gshape', 'Purple_Balloon', 'Yellow_Circle_GShape',
-           'Yellow_Square_GShape', 'Yellow_Triangle_Gshape')
+CLASSES = ('Black Buoy', 'Blue Buoy', 'Green Buoy', 'Maroon Buoy', 'Or', 'Orange Buoy', 'Red Buoy', 'Wader', 'White Buoy', 'Yellow Buoy', 'Zebra Buoy')
 
 
 # ===========================================================================
