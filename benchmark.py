@@ -127,7 +127,7 @@ def start_cpu_stress(cpu_load_percent, duration_s):
 
     return subprocess.Popen(
         [
-            "stress_ng",
+            stress_ng,
             "--cpu", str(cpu_count),
             "--cpu-load", str(cpu_load_percent),
             "--timeout", f"{duration_s}s",
