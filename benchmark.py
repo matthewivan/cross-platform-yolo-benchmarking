@@ -123,21 +123,11 @@ def start_cpu_stress(cpu_load_percent, duration_s):
     if cpu_load_percent <= 0:
         return None  # 0% load = no stressor at all
 
-    stress_ng = shutil.which("stress-ng")
-
-    if stress_ng is None:
-        raise RuntimeError(
-            "stress-ng was not found.\n"
-            "Install it with:\n"
-            "  sudo apt update\n"
-            "  sudo apt install stress-ng"
-        )
-
-    cpu_count = psutil.cpu_count(logical=True) or 1
+    cpu_count = psutil.cpu_count(logical=True)
 
     return subprocess.Popen(
         [
-            stress_ng,
+            "stress_ng",
             "--cpu", str(cpu_count),
             "--cpu-load", str(cpu_load_percent),
             "--timeout", f"{duration_s}s",
@@ -229,6 +219,20 @@ def main():
                         help="Force /sys/class/thermal/thermal_zoneN (skip auto-detect)")
     parser.add_argument("--output", default="benchmark_results.csv")
     args = parser.parse_args()
+
+    # Check for stress-ng before starting any benchmark trials.
+    if any(load > 0 for load in args.cpu_loads):
+        stress_ng = shutil.which("stress-ng")
+
+        if stress_ng is None:
+            parser.error(
+                "stress-ng was not found.\n"
+                "Install it with:\n"
+                "  sudo apt update\n"
+                "  sudo apt install stress-ng"
+            )
+
+        print(f"[stress] using {stress_ng}")
 
     if args.thermal_zone is not None:
         temp_path = f"/sys/class/thermal/thermal_zone{args.thermal_zone}/temp"
