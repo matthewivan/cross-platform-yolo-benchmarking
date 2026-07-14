@@ -27,6 +27,7 @@ import csv
 import os
 import glob
 import shlex
+import shutil
 from datetime import datetime
 
 
@@ -121,12 +122,30 @@ def run_inference(framework, imgsz, frames, model, external_cmd, unit_scale):
 def start_cpu_stress(cpu_load_percent, duration_s):
     if cpu_load_percent <= 0:
         return None  # 0% load = no stressor at all
-    cpu_count = psutil.cpu_count(logical=True)
-    return subprocess.Popen([
-        "stress-ng", "--cpu", str(cpu_count),
-        "--cpu-load", str(cpu_load_percent),
-        "--timeout", f"{duration_s}s", "--metrics-brief"
-    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    stress_ng = shutil.which("stress-ng")
+
+    if stress_ng is None:
+        raise RuntimeError(
+            "stress-ng was not found.\n"
+            "Install it with:\n"
+            "  sudo apt update\n"
+            "  sudo apt install stress-ng"
+        )
+
+    cpu_count = psutil.cpu_count(logical=True) or 1
+
+    return subprocess.Popen(
+        [
+            stress_ng,
+            "--cpu", str(cpu_count),
+            "--cpu-load", str(cpu_load_percent),
+            "--timeout", f"{duration_s}s",
+            "--metrics-brief",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
 
 def stop_stress(proc):
