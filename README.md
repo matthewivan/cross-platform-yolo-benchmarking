@@ -345,6 +345,33 @@ Mode `0` is normally MAXN, but verify it using `nvpmodel -q` and the local
 `/etc/nvpmodel.conf`. Always run `nvpmodel` before `jetson_clocks`; changing the
 power mode after locking clocks may require another reboot.
 
+`MAXN` appears because `sudo nvpmodel -m 0` explicitly selects mode 0. On the
+logged AGX Orin, `MODE_50W` is mode 3, while MAXN is mode 0. MAXN is a maximum
+performance envelope, not a promise that the board constantly consumes its
+maximum possible power. `MODE_50W` applies lower CPU/GPU limits intended to keep
+the module within its 50 W profile.
+
+The benchmark scripts never change `nvpmodel` or call `jetson_clocks`.
+`benchmark.py` only reads the active mode into the CSV and starts/stops
+`stress-ng`. Set the desired power and clock policy before starting a benchmark,
+and keep it unchanged for every compared run.
+
+To return this logged board to its 50 W profile, reboot first if clocks have
+already been locked, then select and verify mode 3:
+
+```bash
+sudo reboot
+sudo nvpmodel -m 3
+sudo nvpmodel -q --verbose
+```
+
+The commands after `sudo reboot` must be entered after the Jetson starts again.
+Mode IDs can vary by module/configuration, so confirm `MODE_50W` in
+`/etc/nvpmodel.conf`. If you run `sudo jetson_clocks` after choosing mode 3, it
+locks clocks to the maximum values permitted by the 50 W profile—not MAXN's
+higher limits. For dynamic deployment-like behavior, choose mode 3 and do not
+run `jetson_clocks`.
+
 For realistic dynamic performance, select the intended deployment power mode
 but do not run `jetson_clocks`. Leave normal dynamic clocks and fan control
 active. Do not mix fixed-clock and dynamic-clock trials in one CSV.
@@ -465,7 +492,11 @@ python3 detector.py \
   --images ./images \
   --imgsz 640 \
   --frames 20 \
-  --warmup 10
+  --warmup 10 \
+  --conf 0.25 \
+  --iou 0.45 \
+  --validate-results \
+  --results-dir result
 ```
 
 INT8:
@@ -477,7 +508,11 @@ python3 detector.py \
   --images ./images \
   --imgsz 640 \
   --frames 20 \
-  --warmup 10
+  --warmup 10 \
+  --conf 0.25 \
+  --iou 0.45 \
+  --validate-results \
+  --results-dir result
 ```
 
 Each run should print 20 `inference time:` lines followed by:
@@ -487,7 +522,12 @@ measured loop elapsed: <seconds> s
 ```
 
 `detector.py` loads all images before timing and cycles them until `--frames` is
-reached. Model loading and warmup are excluded from measured-loop time.
+reached. Model loading and warmup are excluded from measured-loop time. After
+the measured loop finishes, the detector prints each class, confidence,
+and `xyxy` box, then writes annotated images to `result/`. Drawing, printing,
+and file writes happen after `measured loop elapsed`, so validation output does
+not contaminate the recorded loop time. Output filenames contain a frame number
+because `--frames` may cycle through the same source images more than once.
 
 ### 11. Smoke-test the benchmark harness
 
@@ -1067,17 +1107,33 @@ Confirms that both engine files were produced.
 ### Smoke-test inference and the harness
 
 ```bash
-python3 detector.py --framework tensorrt \
+python3 detector.py \
+  --framework tensorrt \
   --model models/yolov8n_second_buoy_640_fp16.engine \
-  --images ./images --imgsz 640 --frames 20 --warmup 10
+  --images ./images \
+  --imgsz 640 \
+  --frames 20 \
+  --warmup 10 \
+  --conf 0.25 \
+  --iou 0.45 \
+  --validate-results \
+  --results-dir result
 ```
 
 Checks FP16 engine loading, per-frame latency, and measured-loop timing.
 
 ```bash
-python3 detector.py --framework tensorrt \
+python3 detector.py \
+  --framework tensorrt \
   --model models/yolov8n_second_buoy_640_int8.engine \
-  --images ./images --imgsz 640 --frames 20 --warmup 10
+  --images ./images \
+  --imgsz 640 \
+  --frames 20 \
+  --warmup 10 \
+  --conf 0.25 \
+  --iou 0.45 \
+  --validate-results \
+  --results-dir result
 ```
 
 Performs the same check for INT8.

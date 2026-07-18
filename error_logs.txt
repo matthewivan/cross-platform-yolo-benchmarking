@@ -610,3 +610,244 @@ Requirement already satisfied: fsspec>=0.8.5 in /home/aim-miu/development/.aimm-
 Requirement already satisfied: MarkupSafe>=2.0 in /usr/lib/python3/dist-packages (from jinja2->torch>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 10)) (2.0.1)
 Would install contourpy-1.3.2 matplotlib-3.10.9 ml_dtypes-0.5.4 numpy-1.26.4 nvidia-ml-py-13.610.43 onnx-1.22.0 onnxslim-0.1.94 opencv-python-4.11.0.86 opencv-python-headless-4.11.0.86 pandas-2.3.3 polars-1.42.1 polars-runtime-32-1.42.1 protobuf-7.35.1 psutil-7.2.2 pyparsing-3.3.2 python-dateutil-2.9.0.post0 tzdata-2026.3 ultralytics-8.4.101 ultralytics-thop-2.0.20
 
+
+---
+setup attempt 4
+---
+
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ python -m pip install -r requirements.txt
+python -m pip check
+Collecting ultralytics>=8.3.0 (from -r requirements.txt (line 10))
+  Using cached ultralytics-8.4.101-py3-none-any.whl.metadata (42 kB)
+Collecting numpy<2.0.0,>=1.23.0 (from -r requirements.txt (line 11))
+  Using cached numpy-1.26.4-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (62 kB)
+Collecting psutil>=5.9.0 (from -r requirements.txt (line 12))
+  Using cached psutil-7.2.2-cp36-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (22 kB)
+Collecting pandas>=1.5.0 (from -r requirements.txt (line 13))
+  Using cached pandas-2.3.3-cp310-cp310-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl.metadata (91 kB)
+Collecting matplotlib>=3.6.0 (from -r requirements.txt (line 14))
+  Using cached matplotlib-3.10.9-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl.metadata (52 kB)
+Collecting onnx>=1.14.0 (from -r requirements.txt (line 17))
+  Using cached onnx-1.22.0-cp310-cp310-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl.metadata (8.5 kB)
+Collecting onnxslim>=0.1.50 (from -r requirements.txt (line 18))
+  Using cached onnxslim-0.1.94-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: filelock>=3.16.1 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (3.31.0)
+Collecting opencv-python!=4.13.0.90,>=4.6.0 (from ultralytics>=8.3.0->-r requirements.txt (line 10))
+  Using cached opencv_python-5.0.0.93-cp37-abi3-manylinux_2_28_aarch64.whl.metadata (19 kB)
+Requirement already satisfied: pillow>=7.1.2 in /usr/lib/python3/dist-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (9.0.1)
+Requirement already satisfied: pyyaml>=5.3.1 in /usr/lib/python3/dist-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (5.4.1)
+Requirement already satisfied: requests>=2.23.0 in /usr/lib/python3/dist-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (2.25.1)
+Requirement already satisfied: torch>=1.8.0 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (2.10.0)
+Requirement already satisfied: torchvision>=0.9.0 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (0.25.0)
+Collecting polars>=0.20.0 (from ultralytics>=8.3.0->-r requirements.txt (line 10))
+  Using cached polars-1.42.1-py3-none-any.whl.metadata (10 kB)
+Collecting nvidia-ml-py>=12.0.0 (from ultralytics>=8.3.0->-r requirements.txt (line 10))
+  Using cached nvidia_ml_py-13.610.43-py3-none-any.whl.metadata (9.7 kB)
+Collecting ultralytics-thop>=2.0.18 (from ultralytics>=8.3.0->-r requirements.txt (line 10))
+  Using cached ultralytics_thop-2.0.20-py3-none-any.whl.metadata (14 kB)
+Collecting python-dateutil>=2.8.2 (from pandas>=1.5.0->-r requirements.txt (line 13))
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Requirement already satisfied: pytz>=2020.1 in /usr/lib/python3/dist-packages (from pandas>=1.5.0->-r requirements.txt (line 13)) (2022.1)
+Collecting tzdata>=2022.7 (from pandas>=1.5.0->-r requirements.txt (line 13))
+  Using cached tzdata-2026.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting contourpy>=1.0.1 (from matplotlib>=3.6.0->-r requirements.txt (line 14))
+  Using cached contourpy-1.3.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (5.5 kB)
+Requirement already satisfied: cycler>=0.10 in /usr/lib/python3/dist-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (0.11.0)
+Requirement already satisfied: fonttools>=4.22.0 in /usr/lib/python3/dist-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (4.29.1)
+Requirement already satisfied: kiwisolver>=1.3.1 in /usr/lib/python3/dist-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (1.3.2)
+Requirement already satisfied: packaging>=20.0 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (26.2)
+Collecting pyparsing>=3 (from matplotlib>=3.6.0->-r requirements.txt (line 14))
+  Using cached pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting protobuf>=4.25.1 (from onnx>=1.14.0->-r requirements.txt (line 17))
+  Using cached protobuf-7.35.1-cp310-abi3-manylinux2014_aarch64.whl.metadata (595 bytes)
+Requirement already satisfied: typing_extensions>=4.15.0 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from onnx>=1.14.0->-r requirements.txt (line 17)) (4.16.0)
+Collecting ml_dtypes>=0.5.4 (from onnx>=1.14.0->-r requirements.txt (line 17))
+  Using cached ml_dtypes-0.5.4-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl.metadata (8.9 kB)
+Requirement already satisfied: colorama in /usr/lib/python3/dist-packages (from onnxslim>=0.1.50->-r requirements.txt (line 18)) (0.4.4)
+Requirement already satisfied: sympy>=1.13.1 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from onnxslim>=0.1.50->-r requirements.txt (line 18)) (1.14.0)
+INFO: pip is looking at multiple versions of opencv-python to determine which version is compatible with other requirements. This could take a while.
+Collecting opencv-python!=4.13.0.90,>=4.6.0 (from ultralytics>=8.3.0->-r requirements.txt (line 10))
+  Using cached opencv_python-4.13.0.92-cp37-abi3-manylinux_2_28_aarch64.whl.metadata (19 kB)
+  Using cached opencv_python-4.12.0.88-cp37-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl.metadata (19 kB)
+  Using cached opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (20 kB)
+Collecting polars-runtime-32==1.42.1 (from polars>=0.20.0->ultralytics>=8.3.0->-r requirements.txt (line 10))
+  Using cached polars_runtime_32-1.42.1-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (1.5 kB)
+Requirement already satisfied: six>=1.5 in /usr/lib/python3/dist-packages (from python-dateutil>=2.8.2->pandas>=1.5.0->-r requirements.txt (line 13)) (1.16.0)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from sympy>=1.13.1->onnxslim>=0.1.50->-r requirements.txt (line 18)) (1.3.0)
+Requirement already satisfied: networkx>=2.5.1 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 10)) (3.4.2)
+Requirement already satisfied: jinja2 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 10)) (3.1.6)
+Requirement already satisfied: fsspec>=0.8.5 in /home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 10)) (2026.6.0)
+Requirement already satisfied: MarkupSafe>=2.0 in /usr/lib/python3/dist-packages (from jinja2->torch>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 10)) (2.0.1)
+Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (14.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.2/14.2 MB 9.9 MB/s  0:00:01
+Downloading ultralytics-8.4.101-py3-none-any.whl (1.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 14.9 MB/s  0:00:00
+Downloading psutil-7.2.2-cp36-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (156 kB)
+Downloading pandas-2.3.3-cp310-cp310-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl (12.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.1/12.1 MB 18.6 MB/s  0:00:00
+Downloading matplotlib-3.10.9-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (9.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.6/9.6 MB 22.2 MB/s  0:00:00
+Downloading onnx-1.22.0-cp310-cp310-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl (18.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.9/18.9 MB 26.2 MB/s  0:00:00
+Downloading onnxslim-0.1.94-py3-none-any.whl (238 kB)
+Downloading contourpy-1.3.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (312 kB)
+Downloading ml_dtypes-0.5.4-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (5.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.1/5.1 MB 27.8 MB/s  0:00:00
+Downloading nvidia_ml_py-13.610.43-py3-none-any.whl (53 kB)
+Downloading opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (42.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.2/42.2 MB 33.6 MB/s  0:00:01
+Downloading polars-1.42.1-py3-none-any.whl (837 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.6/837.6 kB 25.2 MB/s  0:00:00
+Downloading polars_runtime_32-1.42.1-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (51.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 51.4/51.4 MB 40.4 MB/s  0:00:01
+Downloading protobuf-7.35.1-cp310-abi3-manylinux2014_aarch64.whl (328 kB)
+Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading tzdata-2026.3-py2.py3-none-any.whl (348 kB)
+Downloading ultralytics_thop-2.0.20-py3-none-any.whl (28 kB)
+Installing collected packages: nvidia-ml-py, tzdata, python-dateutil, pyparsing, psutil, protobuf, polars-runtime-32, numpy, polars, pandas, opencv-python, ml_dtypes, contourpy, ultralytics-thop, onnx, matplotlib, ultralytics, onnxslim
+  Attempting uninstall: python-dateutil
+    Found existing installation: python-dateutil 2.8.1
+    Not uninstalling python-dateutil at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'python-dateutil'. No files were found to uninstall.
+  Attempting uninstall: pyparsing
+    Found existing installation: pyparsing 2.4.7
+    Not uninstalling pyparsing at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'pyparsing'. No files were found to uninstall.
+  Attempting uninstall: protobuf
+    Found existing installation: protobuf 3.12.4
+    Not uninstalling protobuf at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'protobuf'. No files were found to uninstall.
+  Attempting uninstall: numpy
+    Found existing installation: numpy 1.21.5
+    Not uninstalling numpy at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'numpy'. No files were found to uninstall.
+  Attempting uninstall: pandas
+    Found existing installation: pandas 1.3.5
+    Not uninstalling pandas at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'pandas'. No files were found to uninstall.
+  Attempting uninstall: matplotlib
+    Found existing installation: matplotlib 3.5.1
+    Not uninstalling matplotlib at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'matplotlib'. No files were found to uninstall.
+Successfully installed contourpy-1.3.2 matplotlib-3.10.9 ml_dtypes-0.5.4 numpy-1.26.4 nvidia-ml-py-13.610.43 onnx-1.22.0 onnxslim-0.1.94 opencv-python-4.11.0.86 pandas-2.3.3 polars-1.42.1 polars-runtime-32-1.42.1 protobuf-7.35.1 psutil-7.2.2 pyparsing-3.3.2 python-dateutil-2.9.0.post0 tzdata-2026.3 ultralytics-8.4.101 ultralytics-thop-2.0.20
+pynacl 1.5.0 requires cffi, which is not installed. --> is this important? (this is me typing it in)
+
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ python -c "
+import torch
+import tensorrt as trt
+import ultralytics
+
+assert torch.cuda.is_available(), 'CUDA-enabled Jetson Torch is not working'
+
+print('Torch:', torch.__version__)
+print('Torch CUDA:', torch.version.cuda)
+print('GPU:', torch.cuda.get_device_name(0))
+print('TensorRT:', trt.__version__)
+print('Ultralytics:', ultralytics.__version__)
+"
+Torch: 2.10.0
+Torch CUDA: 12.6
+GPU: Orin
+TensorRT: 10.3.0
+Ultralytics: 8.4.101
+
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ python convert_model.py \
+  --pt models/yolov8n_second_buoy.pt \
+  --imgsz 640 \
+  --target tensorrt \
+  --precision fp16 \
+  --output models/yolov8n_second_buoy_640_fp16.engine
+/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+WARNING ⚠️ TensorRT requires GPU export, automatically assigning device=0
+Ultralytics 8.4.101 🚀 Python-3.10.12 torch-2.10.0 CUDA:0 (Orin, 62841MiB)
+Model summary (fused): 72 layers, 3,007,793 parameters, 0 gradients, 8.1 GFLOPs
+
+PyTorch: starting from 'models/yolov8n_second_buoy.pt' with input shape (1, 3, 640, 640) BCHW and output shape(s) (1, 15, 8400) (6.0 MB)
+requirements: Ultralytics requirement ['onnxruntime-gpu'] not found, attempting AutoUpdate...
+WARNING ⚠️ Retry 1/2 failed: Command '"/home/aim-miu/development/.aimm-p310/bin/python" -m pip install --no-cache-dir "onnxruntime-gpu" ' returned non-zero exit status 1.
+WARNING ⚠️ Retry 2/2 failed: Command '"/home/aim-miu/development/.aimm-p310/bin/python" -m pip install --no-cache-dir "onnxruntime-gpu" ' returned non-zero exit status 1.
+WARNING ⚠️ requirements: ❌ Command '"/home/aim-miu/development/.aimm-p310/bin/python" -m pip install --no-cache-dir "onnxruntime-gpu" ' returned non-zero exit status 1.
+ERROR: Could not find a version that satisfies the requirement onnxruntime-gpu (from versions: none)
+ERROR: No matching distribution found for onnxruntime-gpu
+
+
+ONNX: starting export with onnx 1.22.0 opset 18...
+ONNX: slimming with onnxslim 0.1.94...
+ONNX: export success ✅ 5.5s, saved as 'models/yolov8n_second_buoy.onnx' (11.7 MB)
+
+TensorRT: starting export with TensorRT 10.3.0...
+[07/18/2026-17:22:36] [TRT] [I] [MemUsageChange] Init CUDA: CPU +2, GPU +0, now: CPU 677, GPU 5582 (MiB)
+[07/18/2026-17:22:38] [TRT] [I] [MemUsageChange] Init builder kernel library: CPU +927, GPU +1100, now: CPU 1647, GPU 6713 (MiB)
+[07/18/2026-17:22:38] [TRT] [I] ----------------------------------------------------------------
+[07/18/2026-17:22:38] [TRT] [I] Input filename:   models/yolov8n_second_buoy.onnx
+[07/18/2026-17:22:38] [TRT] [I] ONNX IR version:  0.0.8
+[07/18/2026-17:22:38] [TRT] [I] Opset version:    18
+[07/18/2026-17:22:38] [TRT] [I] Producer name:    pytorch
+[07/18/2026-17:22:38] [TRT] [I] Producer version: 2.10.0
+[07/18/2026-17:22:38] [TRT] [I] Domain:           
+[07/18/2026-17:22:38] [TRT] [I] Model version:    0
+[07/18/2026-17:22:38] [TRT] [I] Doc string:       
+[07/18/2026-17:22:38] [TRT] [I] ----------------------------------------------------------------
+TensorRT: input "images" with shape(1, 3, 640, 640) DataType.FLOAT
+TensorRT: output "output0" with shape(1, 15, 8400) DataType.FLOAT
+TensorRT: building FP16 engine as models/yolov8n_second_buoy.engine
+[07/18/2026-17:22:38] [TRT] [I] Local timing cache in use. Profiling results in this builder pass will not be stored.
+
+^[[B[07/18/2026-17:26:47] [TRT] [I] Detected 1 inputs and 3 output network tensors.
+[07/18/2026-17:26:50] [TRT] [I] Total Host Persistent Memory: 385600
+[07/18/2026-17:26:50] [TRT] [I] Total Device Persistent Memory: 0
+[07/18/2026-17:26:50] [TRT] [I] Total Scratch Memory: 0
+[07/18/2026-17:26:50] [TRT] [I] [BlockAssignment] Started assigning block shifts. This will take 134 steps to complete.
+[07/18/2026-17:26:50] [TRT] [I] [BlockAssignment] Algorithm ShiftNTopDown took 8.65419ms to assign 8 blocks to 134 nodes requiring 9473024 bytes.
+[07/18/2026-17:26:50] [TRT] [I] Total Activation Memory: 9472000
+[07/18/2026-17:26:50] [TRT] [I] Total Weights Memory: 6143488
+[07/18/2026-17:26:50] [TRT] [I] Engine generation completed in 252.556 seconds.
+[07/18/2026-17:26:50] [TRT] [I] [MemUsageStats] Peak memory usage of TRT CPU/GPU memory allocators: CPU 0 MiB, GPU 115 MiB
+[07/18/2026-17:26:50] [TRT] [I] [MemUsageStats] Peak memory usage during Engine building and serialization: CPU: 2726 MiB
+TensorRT: export success ✅ 260.2s, saved as 'models/yolov8n_second_buoy.engine' (8.5 MB)
+
+Export complete (261.2s)
+Results saved to /home/aim-miu/development/benchmarking/cross-platform-yolo-benchmarking/models/yolov8n_second_buoy.engine
+Predict:         yolo predict task=detect model=models/yolov8n_second_buoy.engine imgsz=640 quantize=16
+Validate:        yolo val task=detect model=models/yolov8n_second_buoy.engine imgsz=640 data=/u/cartmull/Aimm/big-boat-little-boat-1/data.yaml quantize=16 
+Visualize:       https://netron.app
+[convert] wrote: /home/aim-miu/development/benchmarking/cross-platform-yolo-benchmarking/models/yolov8n_second_buoy_640_fp16.engine
+[convert] TensorRT precision: fp16
+[convert] rename to '{imgsz}_yolov8n.<ext>' so detector.py finds it automatically, or pass --model to benchmark.py.
+
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ python3 detector.py \
+  --framework tensorrt \
+  --model models/yolov8n_second_buoy_640_fp16.engine \
+  --images ./images \
+  --imgsz 640 \
+  --frames 20 \
+  --warmup 10
+/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+Loading models/yolov8n_second_buoy_640_fp16.engine for TensorRT inference...
+[07/18/2026-17:31:51] [TRT] [I] Loaded engine size: 8 MiB
+[07/18/2026-17:31:51] [TRT] [I] [MemUsageChange] TensorRT-managed allocation in IExecutionContext creation: CPU +0, GPU +9, now: CPU 0, GPU 14 (MiB)
+inference time: 2.090 ms
+inference time: 2.105 ms
+inference time: 2.111 ms
+inference time: 2.125 ms
+inference time: 2.101 ms
+inference time: 2.085 ms
+inference time: 2.102 ms
+inference time: 2.094 ms
+inference time: 2.089 ms
+inference time: 2.942 ms
+inference time: 2.096 ms
+inference time: 2.237 ms
+inference time: 2.084 ms
+inference time: 2.089 ms
+inference time: 2.105 ms
+inference time: 2.133 ms
+inference time: 2.087 ms
+inference time: 2.089 ms
+inference time: 3.262 ms
+inference time: 2.099 ms
+measured loop elapsed: 0.141479693 s
+
