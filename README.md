@@ -6,7 +6,23 @@ computers: **Raspberry Pi Zero 2W**, **Radxa Zero 3W**, **Khadas Edge 2**, and
 inference, and records latency alongside temperature and clock frequency to show
 how each board throttles under heat.
 
-## Filename convention
+## Guide organization
+
+This README is intentionally divided into clearly labeled parts:
+
+1. **[Part I — Full Jetson AGX Orin guide](#part-i--full-jetson-agx-orin-guide-verbose):** the complete start-to-finish explanation, including the Python environment, JetPack integration, TensorRT engine creation, smoke tests, full FP16/INT8 runs, result interpretation, validation, and plotting.
+2. **[Part II — Concise Jetson command guide](#part-ii--concise-jetson-command-guide):** the same workflow reduced to an ordered copy/paste checklist with brief explanations.
+3. **[Part III — Cross-platform reference](#part-iii--cross-platform-reference):** filenames, other boards, external scripts, project files, and extension notes.
+
+If this is your first Jetson run, follow Part I. If the Jetson has already been
+configured and you only need the commands, jump directly to Part II.
+
+## Project overview and existing cross-platform commands
+
+The following short overview describes the shared repository conventions. The
+complete Jetson procedure starts at **Part I** below.
+
+### Filename convention
 
 All result CSVs use one uniform pattern:
 
@@ -24,9 +40,9 @@ All result CSVs use one uniform pattern:
 `create_plot.py` prints the full expected list at startup, so you never have to
 open the file to check names.
 
-## How to actually run it (per board)
+### How to actually run it (per board)
 
-### 1. Convert the model (on each board)
+#### 1. Convert the model (on each board)
 
 | Board           | Convert command                                            |
 |-----------------|------------------------------------------------------------|
@@ -55,7 +71,7 @@ python3 convert_model.py --pt models/yolov8n_second_buoy.pt --imgsz 640 \
 Rename the output to `640_yolov8n.onnx` / `.rknn` / `.engine` so `detector.py`
 auto-finds it (or pass `--model` explicitly).
 
-### 2. Run the benchmark
+#### 2. Run the benchmark
 
 ```bash
 python3 benchmark.py --frameworks onnx     --imgsz 640 --output rpi_benchmark_640.csv     # Pi
@@ -78,7 +94,7 @@ python3 benchmark.py --frameworks tensorrt \
 `--duration` is the CPU-load preheat period. The stressor remains active for the
 whole inference loop after preheating.
 
-### Using your own RKNN detection script
+#### Using your own RKNN detection script
 
 If you'd rather run your own RKNN script instead of the built-in `detector.py`,
 point `benchmark.py` at it with `--external-cmd`. Your script must print
@@ -101,7 +117,7 @@ built-in runner print `measured loop elapsed: <seconds>` after initialization.
 `benchmark.py` uses that value for `fps`; `process_fps` includes child-process
 startup, while `inference_fps` is derived from inference-only mean latency.
 
-### 3. Plot
+#### 3. Plot
 
 ```bash
 python3 create_plot.py    # boxplots + latency-vs-temp scatters for all boards
@@ -110,7 +126,13 @@ python3 create_plot.py    # boxplots + latency-vs-temp scatters for all boards
 Missing CSVs just print `[skip] missing …` and are left out — no crash. You only
 need the files for boards/resolutions you've actually run.
 
-## Complete Jetson AGX Orin guide
+---
+
+## Part I — Full Jetson AGX Orin guide (verbose)
+
+This section begins with system and environment setup and ends with validated
+results and plots. Run commands on the Jetson unless a step explicitly says
+otherwise.
 
 The Jetson workflow differs from the other boards because the portable PyTorch
 model is compiled into a TensorRT engine before benchmarking:
@@ -229,17 +251,37 @@ Use `--system-site-packages` so the environment can see the TensorRT bindings
 installed by JetPack:
 
 ```bash
-python3 -m venv --system-site-packages .venv
-source .venv/bin/activate
+python3 -m venv --system-site-packages aimm-p310
+source aimm-p310/bin/activate
 python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install -r requirements.txt
 ```
 
-Install the Ultralytics, PyTorch, and Torchvision versions documented for the
-detected JetPack release. JetPack 5 and JetPack 6 often require Jetson-specific
-ARM64 PyTorch wheels. Follow the matching section in the
+Before installing project requirements, confirm that the environment inherited
+JetPack's TensorRT bindings:
+
+```bash
+python -c "import tensorrt as trt; print('TensorRT:', trt.__version__)"
+```
+
+Also verify that CUDA-enabled PyTorch is visible:
+
+```bash
+python -c "import torch; print('Torch:', torch.__version__); print('CUDA:', torch.cuda.is_available())"
+```
+
+If PyTorch is missing or CUDA is `False`, install the PyTorch and Torchvision
+versions documented for the detected JetPack release before continuing. JetPack
+5 and JetPack 6 often require Jetson-specific ARM64 wheels. Follow the matching
+section in the
 [Ultralytics Jetson guide](https://docs.ultralytics.com/guides/nvidia-jetson)
 instead of assuming the normal PyPI Torch wheel is compatible.
+
+Once TensorRT imports and CUDA-enabled Torch works, install the repository
+requirements:
+
+```bash
+python -m pip install -r requirements.txt
+```
 
 Verify the complete Python stack:
 
@@ -359,7 +401,7 @@ Activate the environment whenever opening a new terminal:
 
 ```bash
 cd ~/cross-platform-yolo-benchmarking
-source .venv/bin/activate
+source aimm-p310/bin/activate
 ```
 
 Build FP16:
@@ -626,7 +668,12 @@ Pass the matching `--imgsz` and engine to both export and benchmark commands.
 - **Wrong thermal zone:** inspect `cat /sys/class/thermal/thermal_zone*/type` and
   pass `--thermal-zone N` if the cross-platform sensor selection is unsuitable.
 
-## Jetson command runbook
+---
+
+## Part II — Concise Jetson command guide
+
+> **CONCISE VERSION STARTS HERE.** Use this section only after reading Part I or
+> when the Jetson software stack is already understood.
 
 This is the compact copy/paste version of the preceding guide. Replace values in
 angle brackets before running a command.
@@ -662,10 +709,15 @@ Lists installed NVIDIA runtime packages.
 ```bash
 sudo apt update
 sudo apt install -y nvidia-jetpack python3-pip python3-venv python3-opencv stress-ng
+```
+
+Installs JetPack runtimes and the host tools used by the benchmark.
+
+```bash
 sudo reboot
 ```
 
-Installs JetPack runtimes and the host tools used by the benchmark, then reboots.
+Reboots after platform package changes.
 
 ```bash
 nvcc --version
@@ -677,15 +729,27 @@ Verifies CUDA, the TensorRT CLI, and TensorRT Python bindings.
 
 ```bash
 cd ~/cross-platform-yolo-benchmarking
-python3 -m venv --system-site-packages .venv
-source .venv/bin/activate
-python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install -r requirements.txt
+python3 -m venv --system-site-packages aimm-p310
+source aimm-p310/bin/activate
+python -m pip install --upgrade pip setuptools wheel
 ```
 
-Creates an environment that retains access to JetPack packages and installs the
-cross-platform benchmark dependencies. Install the JetPack-specific Torch,
-Torchvision, and Ultralytics versions next, following the official Jetson guide.
+Creates and activates the Python 3.10 environment while retaining access to
+JetPack's system packages.
+
+```bash
+python -c "import tensorrt as trt; print('TensorRT:', trt.__version__)"
+python -c "import torch; print('Torch:', torch.__version__); print('CUDA:', torch.cuda.is_available())"
+```
+
+Verifies TensorRT and CUDA-enabled Torch before pip can modify the environment.
+If either check fails, fix the JetPack-specific installation before continuing.
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Installs the benchmark, export, detection, and plotting dependencies.
 
 ```bash
 python3 -c "import torch, ultralytics, tensorrt as trt; print(torch.__version__, torch.cuda.is_available(), ultralytics.__version__, trt.__version__)"
@@ -721,7 +785,7 @@ Reboot first if `nvpmodel` says the mode change requires it.
 ### Build engines
 
 ```bash
-source .venv/bin/activate
+source aimm-p310/bin/activate
 python3 convert_model.py --pt models/yolov8n_second_buoy.pt --imgsz 640 \
   --target tensorrt --precision fp16 \
   --output models/yolov8n_second_buoy_640_fp16.engine
@@ -830,14 +894,18 @@ mv latency_vs_temp_640.png latency_vs_temp_640_fp16.png
 Generates and preserves the current standard plots for FP16. Repeat with the
 INT8 CSV and `_int8` output names.
 
-## Known unknowns
+---
+
+## Part III — Cross-platform reference
+
+### Known unknowns
 
 - Whether Ultralytics' `.rknn` / `.engine` loading works cleanly depends on your
   exact JetPack + rknn-toolkit versions, which move around. If Ultralytics gives
   trouble, use `--external-cmd` with a raw-runtime script (RKNN-Lite / TensorRT)
   as a fallback.
 
-## Files
+### Files
 
 | File               | Purpose                                                        |
 |--------------------|----------------------------------------------------------------|
@@ -846,7 +914,7 @@ INT8 CSV and `_int8` output names.
 | `convert_model.py` | Export `.pt` → ONNX / RKNN / TensorRT engine                   |
 | `create_plot.py`   | Config-driven boxplots + latency-vs-temperature scatters       |
 
-## Adding a new board
+### Adding a new board
 
 Add one line to the `BOARDS` dict in `create_plot.py`:
 
