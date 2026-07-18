@@ -184,7 +184,9 @@ if __name__ == '__main__':
             img_list.append(path)
     co_helper = COCO_test_helper(enable_letter_box=True)
 
-    # run test
+    # run test; model construction is deliberately outside this measured loop.
+    measured_count = 0
+    loop_start = time.perf_counter()
     for i in range(len(img_list)):
         print('infer {}/{}'.format(i + 1, len(img_list)), end='\r')
 
@@ -206,6 +208,7 @@ if __name__ == '__main__':
         outputs = model.run([img])
         boxes, classes, scores = post_process(outputs)
         inference_time = time.perf_counter() - start_time
+        measured_count += 1
 
         print(f"inference time: {inference_time}")
         print('IMG: {}'.format(img_name))
@@ -225,3 +228,6 @@ if __name__ == '__main__':
 
         # cv2.imshow("full post process result", img_p)
         # cv2.waitKeyEx(0)
+    loop_elapsed = time.perf_counter() - loop_start
+    if measured_count:
+        print(f"measured loop elapsed: {loop_elapsed:.9f} s")

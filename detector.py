@@ -35,6 +35,7 @@ Keep printing "inference time: <ms>" per frame and benchmark.py won't care.
 import argparse
 import os
 import sys
+import time
 import numpy as np
 
 EXT = {
@@ -68,7 +69,21 @@ def make_input(imgsz, image_path):
     return rng.integers(0, 255, size=(imgsz, imgsz, 3), dtype=np.uint8)
 
 
-def run_ultralytics(model_path, img, imgsz, frames, warmup, core_mask):
+def load_inputs(imgsz, image_path, images_dir):
+    """Preload inputs so disk I/O and model setup are outside the measured loop."""
+    if images_dir:
+        if not os.path.isdir(images_dir):
+            sys.exit(f"[detector] image directory not found: {images_dir}")
+        extensions = {".jpg", ".jpeg", ".png", ".bmp"}
+        paths = [os.path.join(images_dir, name) for name in sorted(os.listdir(images_dir))
+                 if os.path.splitext(name)[1].lower() in extensions]
+        if not paths:
+            sys.exit(f"[detector] no supported images found in: {images_dir}")
+        return [make_input(imgsz, path) for path in paths]
+    return [make_input(imgsz, image_path)]
+
+
+def run_ultralytics(model_path, images, imgsz, frames, warmup, core_mask):
     from ultralytics import YOLO
 
     if not os.path.exists(model_path):
@@ -82,14 +97,18 @@ def run_ultralytics(model_path, img, imgsz, frames, warmup, core_mask):
 
     # Warm up (first calls include lazy init / graph build — don't measure them).
     for _ in range(max(0, warmup)):
-        model(img, **predict_kwargs)
+        model(images[0], **predict_kwargs)
 
-    for _ in range(frames):
+    loop_start = time.perf_counter()
+    for index in range(frames):
+        img = images[index % len(images)]
         r = model(img, **predict_kwargs)
         ms = r[0].speed.get("inference")
         if ms is None:
             continue
         print(f"inference time: {ms:.3f} ms", flush=True)
+    loop_elapsed = time.perf_counter() - loop_start
+    print(f"measured loop elapsed: {loop_elapsed:.9f} s", flush=True)
 
 
 def main():
@@ -103,16 +122,19 @@ def main():
                    help="Number of frames to time")
     p.add_argument("--warmup", type=int, default=10,
                    help="Untimed warmup frames")
-    p.add_argument("--image", default=None,
-                   help="Optional real image; omit for synthetic frame")
+    inputs = p.add_mutually_exclusive_group()
+    inputs.add_argument("--image", default=None,
+                        help="Optional real image; omit for synthetic input")
+    inputs.add_argument("--images", default=None,
+                        help="Optional image directory; inputs are preloaded and cycled")
     p.add_argument("--core-mask", default=None,
                    help="RK3588 NPU core mask hint (unused with Ultralytics; "
                         "kept for a raw-RKNN backend)")
     args = p.parse_args()
 
     model_path = resolve_model(args.framework, args.imgsz, args.model)
-    img = make_input(args.imgsz, args.image)
-    run_ultralytics(model_path, img, args.imgsz,
+    images = load_inputs(args.imgsz, args.image, args.images)
+    run_ultralytics(model_path, images, args.imgsz,
                     args.frames, args.warmup, args.core_mask)
 
 

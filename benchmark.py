@@ -3,9 +3,9 @@
 benchmark.py — thermal/load stress harness for YOLOv8 across single-board computers.
 
 For each (framework, cpu_load, trial) it:
-  1. starts a fixed CPU load with stress-ng,
+  1. starts a fixed CPU load with stress-ng and preheats for --duration,
   2. runs detector.py and collects per-frame latencies (already in ms),
-  3. records latency percentiles + temperature + clock,
+  3. records measured-loop/process throughput plus platform telemetry,
   4. writes one CSV row.
 
 CHANGES vs the original:
@@ -16,6 +16,7 @@ CHANGES vs the original:
     is NOT the CPU sensor on Jetson and some Rockchip boards. Override with
     --thermal-zone N.
   * Extra detector args (--imgsz / --frames / --model) are passed through.
+  * Jetson tegrastats data is sampled when the utility is available.
 """
 
 import psutil
@@ -28,6 +29,8 @@ import os
 import glob
 import shlex
 import shutil
+import tempfile
+import re
 from datetime import datetime
 
 
@@ -76,7 +79,8 @@ def get_cpu_usage():
 # -----------------------------------------------------------------------------
 # External inference runner (detector.py)
 # -----------------------------------------------------------------------------
-def run_inference(framework, imgsz, frames, model, external_cmd, unit_scale):
+def run_inference(framework, imgsz, frames, model, image, images,
+                  external_cmd, unit_scale):
     """
     Runs either the built-in detector.py OR your own script (--external-cmd),
     then parses every 'inference time: <value>' line from stdout.
@@ -95,6 +99,10 @@ def run_inference(framework, imgsz, frames, model, external_cmd, unit_scale):
                "--imgsz", str(imgsz), "--frames", str(frames)]
         if model:
             cmd += ["--model", model]
+        if image:
+            cmd += ["--image", image]
+        elif images:
+            cmd += ["--images", images]
 
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, text=True)
@@ -103,8 +111,15 @@ def run_inference(framework, imgsz, frames, model, external_cmd, unit_scale):
         raise RuntimeError(f"inference command failed (exit {proc.returncode}): {err}")
 
     durations = []
+    loop_elapsed = None
     for line in out.splitlines():
         line = line.strip()
+        if line.startswith("measured loop elapsed:"):
+            try:
+                loop_elapsed = float(line.split(":", 1)[1].strip().split()[0])
+            except (ValueError, IndexError):
+                pass
+            continue
         if not line.startswith("inference time:"):
             continue
         try:
@@ -113,13 +128,95 @@ def run_inference(framework, imgsz, frames, model, external_cmd, unit_scale):
             continue
     if not durations:
         raise RuntimeError(f"No 'inference time:' lines parsed. stderr:\n{err}")
-    return durations
+    return durations, loop_elapsed
+
+
+# -----------------------------------------------------------------------------
+# Jetson telemetry (optional; silently unavailable on non-Jetson systems)
+# -----------------------------------------------------------------------------
+def start_tegrastats(interval_ms):
+    executable = shutil.which("tegrastats")
+    if executable is None:
+        return None
+    log = tempfile.NamedTemporaryFile(prefix="yolo_tegrastats_", suffix=".log",
+                                      delete=False)
+    log.close()
+    proc = subprocess.Popen([executable, "--interval", str(interval_ms),
+                             "--logfile", log.name],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return proc, log.name
+
+
+def stop_tegrastats(state):
+    if state is None:
+        return {}
+    proc, path = state
+    proc.terminate()
+    try:
+        proc.wait(timeout=2)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.wait()
+    try:
+        with open(path) as f:
+            lines = f.readlines()
+    except OSError:
+        lines = []
+    finally:
+        try:
+            os.unlink(path)
+        except OSError:
+            pass
+    return parse_tegrastats(lines)
+
+
+def parse_tegrastats(lines):
+    """Return trial averages/maxima from common Jetson tegrastats fields."""
+    values = {key: [] for key in ("gpu_util_percent", "gpu_freq_MHz",
+                                  "cpu_temp_C", "gpu_temp_C", "soc_temp_C",
+                                  "vdd_in_mW")}
+    for line in lines:
+        gpu = re.search(r"GR3D_FREQ\s+(\d+)%", line)
+        gpu_freq = re.search(r"GR3D_FREQ\s+\d+%@(?:\[(?:\d+,)*|)(\d+)", line)
+        if gpu is not None:
+            values["gpu_util_percent"].append(float(gpu.group(1)))
+        if gpu_freq is not None:
+            values["gpu_freq_MHz"].append(float(gpu_freq.group(1)))
+        for label, key in (("cpu", "cpu_temp_C"), ("gpu", "gpu_temp_C"),
+                           ("soc0", "soc_temp_C"), ("soc", "soc_temp_C")):
+            match = re.search(rf"(?:^|\s){label}@([0-9.]+)C", line, re.IGNORECASE)
+            if match is not None:
+                values[key].append(float(match.group(1)))
+                if key == "soc_temp_C":
+                    break
+        power = re.search(r"VDD_IN\s+(\d+)mW", line)
+        if power is not None:
+            values["vdd_in_mW"].append(float(power.group(1)))
+    result = {}
+    for key, samples in values.items():
+        result[f"{key}_avg"] = float(np.mean(samples)) if samples else None
+        result[f"{key}_max"] = max(samples) if samples else None
+    result["tegrastats_samples"] = max((len(v) for v in values.values()), default=0)
+    return result
+
+
+def get_nvpmodel_mode():
+    executable = shutil.which("nvpmodel")
+    if executable is None:
+        return None
+    try:
+        proc = subprocess.run([executable, "-q"], capture_output=True, text=True,
+                              timeout=5, check=False)
+        lines = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+        return " | ".join(lines) or None
+    except (OSError, subprocess.TimeoutExpired):
+        return None
 
 
 # -----------------------------------------------------------------------------
 # CPU stress
 # -----------------------------------------------------------------------------
-def start_cpu_stress(cpu_load_percent, duration_s):
+def start_cpu_stress(cpu_load_percent):
     if cpu_load_percent <= 0:
         return None  # 0% load = no stressor at all
 
@@ -130,7 +227,6 @@ def start_cpu_stress(cpu_load_percent, duration_s):
             "/usr/bin/stress-ng",
             "--cpu", str(cpu_count),
             "--cpu-load", str(cpu_load_percent),
-            "--timeout", f"{duration_s}s",
             "--metrics-brief",
         ],
         stdout=subprocess.DEVNULL,
@@ -151,44 +247,56 @@ def stop_stress(proc):
 # -----------------------------------------------------------------------------
 # One trial
 # -----------------------------------------------------------------------------
-def run_test(cpu_load, duration, framework, imgsz, frames, model,
-             temp_path, external_cmd, unit_scale):
-    stress_proc = start_cpu_stress(cpu_load, duration)
-    time.sleep(1)  # let the load ramp / heat build
+def run_test(cpu_load, duration, framework, imgsz, frames, model, image, images,
+             temp_path, external_cmd, unit_scale, tegrastats_interval):
+    stress_proc = start_cpu_stress(cpu_load)
+    if stress_proc is not None and duration > 0:
+        time.sleep(duration)  # controlled preheat; stress remains active during inference
 
     temp_start = get_cpu_temp(temp_path)
     freq_start = get_cpu_freq()
     usage_start = get_cpu_usage()
 
-    t0 = time.time()
-    arr = np.array(run_inference(framework, imgsz, frames, model,
-                                 external_cmd, unit_scale))  # normalized to ms
-    t1 = time.time()
+    telemetry = start_tegrastats(tegrastats_interval)
+    t0 = time.perf_counter()
+    try:
+        durations, loop_elapsed = run_inference(
+            framework, imgsz, frames, model, image, images, external_cmd, unit_scale)
+        arr = np.array(durations)  # normalized to ms
+    finally:
+        telemetry_stats = stop_tegrastats(telemetry)
+        stop_stress(stress_proc)
+    t1 = time.perf_counter()
 
     temp_end = get_cpu_temp(temp_path)
     freq_end = get_cpu_freq()
     usage_end = get_cpu_usage()
 
-    stop_stress(stress_proc)
-
-    elapsed = t1 - t0
-    return {
+    process_elapsed = t1 - t0
+    measured_elapsed = loop_elapsed if loop_elapsed and loop_elapsed > 0 else None
+    stats = {
         "framework": framework,
         "cpu_load_percent": cpu_load,
         "num_frames": len(arr),
-        "total_time_s": elapsed,
+        "total_time_s": process_elapsed,
+        "measured_loop_time_s": measured_elapsed,
         "mean_latency_ms": float(arr.mean()),
         "p50_latency_ms": float(np.percentile(arr, 50)),
         "p95_latency_ms": float(np.percentile(arr, 95)),
         "p99_latency_ms": float(np.percentile(arr, 99)),
-        "fps": len(arr) / elapsed if elapsed > 0 else None,
+        "fps": len(arr) / measured_elapsed if measured_elapsed else None,
+        "process_fps": len(arr) / process_elapsed if process_elapsed > 0 else None,
+        "inference_fps": 1000.0 / float(arr.mean()) if arr.mean() > 0 else None,
         "temp_start_C": temp_start,
         "temp_end_C": temp_end,
         "freq_start_MHz": freq_start,
         "freq_end_MHz": freq_end,
         "cpu_usage_start_percent": usage_start,
         "cpu_usage_end_percent": usage_end,
+        "nvpmodel_mode": get_nvpmodel_mode(),
     }
+    stats.update(telemetry_stats)
+    return stats
 
 
 # -----------------------------------------------------------------------------
@@ -201,13 +309,18 @@ def main():
     parser.add_argument("--cpu-loads", nargs="+", type=int,
                         default=[0, 25, 50, 75, 100])
     parser.add_argument("--duration", type=int, default=60,
-                        help="Stress seconds per trial")
+                        help="CPU-stress preheat seconds; stress continues through inference")
     parser.add_argument("--trials", type=int, default=10)
     parser.add_argument("--imgsz", type=int, default=640)
     parser.add_argument("--frames", type=int, default=200,
                         help="Frames timed per trial")
     parser.add_argument("--model", default=None,
                         help="Explicit model path passed to detector.py")
+    inputs = parser.add_mutually_exclusive_group()
+    inputs.add_argument("--image", default=None,
+                        help="Real image passed to built-in detector.py")
+    inputs.add_argument("--images", default=None,
+                        help="Image directory passed to built-in detector.py")
     parser.add_argument("--external-cmd", default=None,
                         help="Run YOUR OWN inference script instead of detector.py, "
                              "e.g. --external-cmd \"python3 my_rknn_bench.py --model m.rknn --imgs ./imgs\". "
@@ -217,6 +330,8 @@ def main():
                              "script (prints seconds); values are converted to ms.")
     parser.add_argument("--thermal-zone", type=int, default=None,
                         help="Force /sys/class/thermal/thermal_zoneN (skip auto-detect)")
+    parser.add_argument("--tegrastats-interval", type=int, default=500,
+                        help="Jetson telemetry sample interval in milliseconds")
     parser.add_argument("--output", default="benchmark_results.csv")
     args = parser.parse_args()
 
@@ -247,9 +362,15 @@ def main():
 
     fieldnames = [
         "trial", "framework", "cpu_load_percent", "num_frames", "total_time_s",
-        "mean_latency_ms", "p50_latency_ms", "p95_latency_ms", "p99_latency_ms", "fps",
+        "measured_loop_time_s", "mean_latency_ms", "p50_latency_ms", "p95_latency_ms",
+        "p99_latency_ms", "fps", "process_fps", "inference_fps",
         "temp_start_C", "temp_end_C", "freq_start_MHz", "freq_end_MHz",
         "cpu_usage_start_percent", "cpu_usage_end_percent",
+        "nvpmodel_mode", "tegrastats_samples",
+        "gpu_util_percent_avg", "gpu_util_percent_max",
+        "gpu_freq_MHz_avg", "gpu_freq_MHz_max",
+        "cpu_temp_C_avg", "cpu_temp_C_max", "gpu_temp_C_avg", "gpu_temp_C_max",
+        "soc_temp_C_avg", "soc_temp_C_max", "vdd_in_mW_avg", "vdd_in_mW_max",
     ]
     with open(args.output, "w", newline="") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -260,8 +381,10 @@ def main():
                     print(f"[{datetime.now():%H:%M:%S}] trial {trial} | "
                           f"{framework} | load={cpu_load}%")
                     stats = run_test(cpu_load, args.duration, framework,
-                                     args.imgsz, args.frames, args.model, temp_path,
-                                     args.external_cmd, unit_scale)
+                                     args.imgsz, args.frames, args.model,
+                                     args.image, args.images, temp_path,
+                                     args.external_cmd, unit_scale,
+                                     args.tegrastats_interval)
                     stats["trial"] = trial
                     writer.writerow(stats)
                     csvfile.flush()

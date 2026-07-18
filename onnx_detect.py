@@ -248,6 +248,8 @@ def main():
         for _ in range(max(0, args.warmup)):
             session.run(None, {input_name: w_blob})
 
+    measured_count = 0
+    loop_start = time.perf_counter()
     for _ in range(args.loops):
         for img_name in img_list:
             img_path = os.path.join(args.imgs, img_name)
@@ -268,6 +270,7 @@ def main():
             outputs = organize_outputs(outputs)
             boxes, classes, scores = post_process(outputs)
             inference_time = time.perf_counter() - start_time
+            measured_count += 1
 
             print(f"inference time: {inference_time}")   # SECONDS (use --latency-unit s)
             print('IMG: {}'.format(img_name))
@@ -281,6 +284,9 @@ def main():
                     draw(img_p, real, scores, classes)
                     os.makedirs('./result', exist_ok=True)
                     cv2.imwrite(os.path.join('./result', img_name), img_p)
+    loop_elapsed = time.perf_counter() - loop_start
+    if measured_count:
+        print(f"measured loop elapsed: {loop_elapsed:.9f} s")
 
 
 if __name__ == '__main__':
