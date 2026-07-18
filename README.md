@@ -522,12 +522,13 @@ measured loop elapsed: <seconds> s
 ```
 
 `detector.py` loads all images before timing and cycles them until `--frames` is
-reached. Model loading and warmup are excluded from measured-loop time. After
-the measured loop finishes, the detector prints each class, confidence,
-and `xyxy` box, then writes annotated images to `result/`. Drawing, printing,
-and file writes happen after `measured loop elapsed`, so validation output does
-not contaminate the recorded loop time. Output filenames contain a frame number
-because `--frames` may cycle through the same source images more than once.
+reached. Model loading and warmup are excluded from measured-loop time. For each
+measured frame, the detector prints every class, confidence, and `xyxy` box,
+draws the annotations, and writes the annotated image to `result/`. These steps
+happen inside the measured loop, so `fps` represents the inference, annotation,
+and disk-write pipeline. `mean_latency_ms` and `inference_fps` remain TensorRT
+inference-only metrics. Output filenames contain a frame number because
+`--frames` may cycle through the same source images more than once.
 
 ### 11. Smoke-test the benchmark harness
 
@@ -542,6 +543,8 @@ python3 benchmark.py \
   --cpu-loads 0 \
   --duration 0 \
   --tegrastats-interval 500 \
+  --validate-results \
+  --results-dir result \
   --output jetson_benchmark_640_fp16_smoke.csv
 ```
 
@@ -570,6 +573,8 @@ python3 benchmark.py \
   --cpu-loads 0 25 50 75 100 \
   --duration 60 \
   --tegrastats-interval 500 \
+  --validate-results \
+  --results-dir result \
   --output jetson_benchmark_640_fp16.csv
 ```
 
@@ -586,6 +591,8 @@ python3 benchmark.py \
   --cpu-loads 0 25 50 75 100 \
   --duration 60 \
   --tegrastats-interval 500 \
+  --validate-results \
+  --results-dir result \
   --output jetson_benchmark_640_int8.csv
 ```
 
@@ -593,6 +600,12 @@ Each full command produces 50 rows: five CPU loads multiplied by ten trials.
 For every nonzero load, `stress-ng` preheats for `--duration` seconds and remains
 active throughout model loading, warmup, and measured inference. Load 0 starts
 no stressor and has no preheat wait.
+
+The terminal reports every stage in real time: stress process startup, a
+second-by-second preheat countdown, baseline sampling, telemetry startup, live
+detector/inference/annotation output, telemetry and stress cleanup, and final CSV
+row writes. If a run appears slow, the last visible stage identifies whether it
+is preheating, running the detector, writing annotations, or cleaning up.
 
 Allow the device to return to a consistent starting temperature before changing
 precision, or alternate/run randomized configurations if controlling drift more
@@ -610,8 +623,12 @@ preheat, or background load between the FP16 and INT8 comparisons.
 | `fps` | Frames divided by measured-loop time; primary steady-loop throughput |
 | `process_fps` | Includes Python startup, engine loading, and warmup |
 | `inference_fps` | `1000 / mean_latency_ms`; inference-only theoretical rate |
+| `annotated_frames` | Number of frames whose detections were printed and drawn |
+| `detections_total` | Total detections produced during the measured trial |
+| `detections_per_frame` | Average detected objects per annotated frame |
+| `detected_classes_json` | Per-class detection counts stored as a JSON object |
 | `gpu_util_percent_avg/max` | Average/maximum sampled GPU utilization |
-| `gpu_freq_MHz_avg/max` | Average/maximum sampled GPU frequency |
+| `gpu_freq_MHz_avg/max` | Average/maximum GPU frequency sampled from tegrastats or Jetson GPU sysfs |
 | `cpu_temp_C_avg/max` | Sampled CPU temperature |
 | `gpu_temp_C_avg/max` | Sampled GPU temperature |
 | `soc_temp_C_avg/max` | Sampled SoC temperature |
@@ -622,6 +639,11 @@ Normally `inference_fps >= fps >= process_fps`. Compare `p95` and `p99`, not
 only the mean; throttling and contention often appear first in tail latency.
 `freq_start_MHz` and `freq_end_MHz` may be empty because they use the generic
 `psutil` CPU-frequency interface. Use tegrastats fields for Jetson GPU clocks.
+
+Built-in benchmarking enables `--validate-results` by default. Pass
+`--no-validate-results` only when deliberately measuring a pure prediction loop
+without printing, drawing, saving, or detection telemetry. External commands
+control their own annotation behavior.
 
 Summarize both precisions:
 
@@ -1143,6 +1165,7 @@ python3 benchmark.py --frameworks tensorrt \
   --model models/yolov8n_second_buoy_640_fp16.engine \
   --images ./images --imgsz 640 --frames 50 --trials 2 \
   --cpu-loads 0 --duration 0 --tegrastats-interval 500 \
+  --validate-results --results-dir result \
   --output jetson_benchmark_640_fp16_smoke.csv
 ```
 
@@ -1162,6 +1185,7 @@ python3 benchmark.py --frameworks tensorrt \
   --images ./images --imgsz 640 --frames 200 --trials 10 \
   --cpu-loads 0 25 50 75 100 --duration 60 \
   --tegrastats-interval 500 \
+  --validate-results --results-dir result \
   --output jetson_benchmark_640_fp16.csv
 ```
 
@@ -1173,6 +1197,7 @@ python3 benchmark.py --frameworks tensorrt \
   --images ./images --imgsz 640 --frames 200 --trials 10 \
   --cpu-loads 0 25 50 75 100 --duration 60 \
   --tegrastats-interval 500 \
+  --validate-results --results-dir result \
   --output jetson_benchmark_640_int8.csv
 ```
 

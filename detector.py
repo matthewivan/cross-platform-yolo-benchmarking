@@ -26,7 +26,8 @@ so you measure the accelerator, not image loading.
 
 Use --validate-results with real images to print every detection and save
 annotated frames under --results-dir (default: ./result). Validation output is
-processed after the measured loop so drawing and disk I/O do not affect timing.
+processed inside the measured loop so loop FPS represents the annotated pipeline;
+the per-frame "inference time" value remains accelerator inference-only.
 
 --- If you'd rather NOT depend on Ultralytics ---
 Swap the `run_ultralytics()` call for a raw backend:
@@ -89,7 +90,7 @@ def load_inputs(imgsz, image_path, images_dir):
 
 
 def print_and_save_results(records, results_dir):
-    """Print boxes and save annotated frames without contaminating loop timing."""
+    """Print boxes and save annotated frames as part of the measured pipeline."""
     import cv2
 
     os.makedirs(results_dir, exist_ok=True)
@@ -139,7 +140,6 @@ def run_ultralytics(model_path, images, imgsz, frames, warmup, core_mask,
     for _ in range(max(0, warmup)):
         model(images[0][1], **predict_kwargs)
 
-    validation_records = []
     loop_start = time.perf_counter()
     for index in range(frames):
         source_name, img = images[index % len(images)]
@@ -149,12 +149,9 @@ def run_ultralytics(model_path, images, imgsz, frames, warmup, core_mask,
             continue
         print(f"inference time: {ms:.3f} ms", flush=True)
         if validate_results:
-            validation_records.append((index, source_name, r[0]))
+            print_and_save_results([(index, source_name, r[0])], results_dir)
     loop_elapsed = time.perf_counter() - loop_start
     print(f"measured loop elapsed: {loop_elapsed:.9f} s", flush=True)
-
-    if validate_results:
-        print_and_save_results(validation_records, results_dir)
 
 
 def main():
@@ -181,7 +178,7 @@ def main():
                    help="RK3588 NPU core mask hint (unused with Ultralytics; "
                         "kept for a raw-RKNN backend)")
     p.add_argument("--validate-results", action="store_true",
-                   help="Print detections and save annotated frames after timing")
+                   help="Print and save annotated detections inside the measured loop")
     p.add_argument("--results-dir", default="result",
                    help="Annotated output directory used by --validate-results")
     args = p.parse_args()
