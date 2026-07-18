@@ -232,7 +232,7 @@ installed by JetPack:
 python3 -m venv --system-site-packages .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install numpy psutil pandas matplotlib
+python3 -m pip install -r requirements.txt
 ```
 
 Install the Ultralytics, PyTorch, and Torchvision versions documented for the
@@ -680,7 +680,7 @@ cd ~/cross-platform-yolo-benchmarking
 python3 -m venv --system-site-packages .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install numpy psutil pandas matplotlib
+python3 -m pip install -r requirements.txt
 ```
 
 Creates an environment that retains access to JetPack packages and installs the

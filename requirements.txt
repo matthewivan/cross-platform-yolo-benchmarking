@@ -1,0 +1,20 @@
+# Cross-platform Python dependencies used by the benchmark, detector, exporter,
+# and plotting scripts.
+#
+# Jetson note:
+#   Create the environment with --system-site-packages so it can use the CUDA,
+#   TensorRT, and CUDA-enabled PyTorch packages matched to JetPack. Those three
+#   packages are intentionally NOT listed here; generic PyPI builds can replace
+#   the Jetson builds or be incompatible with aarch64.
+
+ultralytics>=8.3.0
+numpy>=1.23.0,<2.0.0
+psutil>=5.9.0
+pandas>=1.5.0
+matplotlib>=3.6.0
+opencv-python-headless>=4.8.0
+
+# Used while Ultralytics constructs ONNX/TensorRT exports.
+onnx>=1.14.0
+onnxslim>=0.1.50
+
