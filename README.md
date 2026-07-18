@@ -738,10 +738,91 @@ python -m pip install \
   https://github.com/ultralytics/assets/releases/download/v0.0.0/torchvision-0.25.0-cp310-cp310-linux_aarch64.whl
 ```
 
-That Torch build also requires cuDSS; follow the cuDSS installation subsection
-in the linked Ultralytics guide. The logged device is JetPack 6.2.1 rather than
-the guide's section labeled 6.1, so treat the CUDA verification below as a hard
-gate rather than assuming compatibility.
+That Torch build requires the native cuDSS library. Installing the Python wheel
+does not install this shared-library dependency. Complete the next subsection
+before importing Torch. The logged device is JetPack 6.2.1 rather than the
+guide's section labeled 6.1, so treat every verification below as a hard gate
+rather than assuming compatibility.
+
+#### 17.5 Install and verify cuDSS
+
+If Torch fails to import with this error:
+
+```text
+ImportError: libcudss.so.0: cannot open shared object file: No such file or directory
+```
+
+the Torch wheel was unpacked correctly, but its native cuDSS dependency is
+missing or unavailable to the dynamic linker. This happens before CUDA or the
+GPU can be initialized and is not evidence that the Jetson driver is outdated.
+
+Confirm whether cuDSS is installed:
+
+```bash
+dpkg -l | grep -i cudss
+ldconfig -p | grep -i cudss
+find /usr -name 'libcudss.so*' 2>/dev/null
+```
+
+The current Ultralytics Jetson instructions specify the Tegra ARM64 cuDSS 0.7.1
+repository for this Torch build:
+
+```bash
+cd /tmp
+
+wget https://developer.download.nvidia.com/compute/cudss/0.7.1/local_installers/cudss-local-tegra-repo-ubuntu2204-0.7.1_0.7.1-1_arm64.deb
+
+sudo dpkg -i \
+  cudss-local-tegra-repo-ubuntu2204-0.7.1_0.7.1-1_arm64.deb
+
+sudo cp \
+  /var/cudss-local-tegra-repo-ubuntu2204-0.7.1/cudss-*-keyring.gpg \
+  /usr/share/keyrings/
+
+sudo apt-get update
+sudo apt-get install -y cudss
+sudo ldconfig
+```
+
+Use the `tegra`/`arm64` package on Jetson; do not install an x86 cuDSS package.
+Verify that installation created and registered the library:
+
+```bash
+dpkg -l | grep -i cudss
+ldconfig -p | grep -i cudss
+find /usr -name 'libcudss.so*' 2>/dev/null
+```
+
+Expected files include `libcudss.so`, `libcudss.so.0`, and a versioned library.
+Check Torch's direct CUDA-library dependencies:
+
+```bash
+ldd "$VIRTUAL_ENV/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so" \
+  | grep -E 'cudss|not found'
+```
+
+`libcudss.so.0` must resolve to a real path. Check every Torch shared object for
+other missing libraries:
+
+```bash
+find "$VIRTUAL_ENV/lib/python3.10/site-packages/torch/lib" \
+  -maxdepth 1 -type f -name '*.so*' \
+  -exec ldd {} \; 2>/dev/null \
+  | grep 'not found' \
+  | sort -u
+```
+
+No output is ideal. If cuDSS files exist but `ldconfig -p` does not list them,
+run `sudo ldconfig` again and inspect their installed location with:
+
+```bash
+dpkg -L cudss | grep 'libcudss'
+```
+
+Avoid adding arbitrary directories to `LD_LIBRARY_PATH`; the Debian package
+should normally configure the linker correctly.
+
+Now retry the complete Torch/CUDA check:
 
 ```bash
 python -c "
@@ -761,7 +842,7 @@ CUDA available: True
 Device: NVIDIA Orin
 ```
 
-#### 17.5 Dry-run and install the remaining requirements
+#### 17.6 Dry-run and install the remaining requirements
 
 The compatible Torch and Torchvision packages must already be installed before
 running this command:
@@ -789,7 +870,7 @@ Use `python -m pip list --local` to distinguish packages installed inside the
 virtual environment from inherited system packages. Never use `sudo pip` to
 modify JetPack's Python installation.
 
-#### 17.6 Verify the complete stack and retry export
+#### 17.7 Verify the complete stack and retry export
 
 ```bash
 python -c "
