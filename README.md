@@ -647,7 +647,181 @@ yolov8n_second_buoy_640_int8.engine
 
 Pass the matching `--imgsz` and engine to both export and benchmark commands.
 
-### 17. Common Jetson failures
+### 17. Recover from an incompatible CUDA/PyTorch pip installation
+
+Use this recovery procedure if pip installed a generic PyTorch build such as
+`torch-2.13.0+cu130` and packages such as `nvidia-*-cu13` on a JetPack 6 system.
+JetPack 6 uses a CUDA 12.x driver/runtime stack, so a CUDA 13 PyTorch wheel can
+detect the Orin GPU while still reporting:
+
+```text
+torch.cuda.is_available(): False
+The NVIDIA driver on your system is too old (found version 12060)
+```
+
+Do not install a desktop NVIDIA driver to resolve this. Jetson GPU drivers are
+part of Jetson Linux/JetPack. Install a PyTorch build made for the installed
+JetPack release instead.
+
+The contaminated virtual environment can contain several gigabytes of
+incompatible CUDA packages. Recreating it is cleaner than uninstalling those
+packages individually.
+
+#### 17.1 Leave and preserve the old environment
+
+```bash
+deactivate
+```
+
+The observed environment was located at
+`/home/aim-miu/development/.aimm-p310`. Rename it rather than deleting it
+immediately:
+
+```bash
+mv /home/aim-miu/development/.aimm-p310 \
+   /home/aim-miu/development/.aimm-p310-bad-cu13
+```
+
+If the environment is stored elsewhere, replace the path with the result of
+`dirname "$(dirname "$(which python)")"` while it is still active.
+
+#### 17.2 Create a clean environment in the repository
+
+```bash
+cd ~/development/benchmarking/cross-platform-yolo-benchmarking
+
+python3 -m venv --system-site-packages aimm-p310
+source aimm-p310/bin/activate
+
+python -m pip install --upgrade --ignore-installed setuptools wheel
+```
+
+`--system-site-packages` makes JetPack's TensorRT Python bindings visible. If
+pip says it cannot uninstall a package because it is outside the environment,
+that is a safety message: pip cannot modify Ubuntu/JetPack-owned packages. The
+environment-local copy takes precedence. Confirm active package paths with:
+
+```bash
+which python
+python -m pip list --local
+python -c "import wheel; print(wheel.__version__, wheel.__file__)"
+```
+
+#### 17.3 Verify TensorRT before installing anything else
+
+```bash
+python -c "import tensorrt as trt; print('TensorRT:', trt.__version__)"
+```
+
+For the logged JetPack 6.2.1 system, the expected result is:
+
+```text
+TensorRT: 10.3.0
+```
+
+#### 17.4 Install Jetson-compatible PyTorch before Ultralytics
+
+This ordering prevents Ultralytics from resolving its Torch dependency to the
+generic CUDA 13 PyPI build. NVIDIA requires a PyTorch build matched to the
+installed JetPack platform. Consult the
+[NVIDIA Jetson PyTorch compatibility matrix](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform-release-notes/pytorch-jetson-rel.html)
+and [NVIDIA installation guide](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/index.html).
+
+The current [Ultralytics Jetson guide](https://docs.ultralytics.com/guides/nvidia-jetson)
+provides these Python 3.10 ARM64 wheels for its JetPack 6 instructions:
+
+```bash
+python -m pip install \
+  https://github.com/ultralytics/assets/releases/download/v0.0.0/torch-2.10.0-cp310-cp310-linux_aarch64.whl
+
+python -m pip install \
+  https://github.com/ultralytics/assets/releases/download/v0.0.0/torchvision-0.25.0-cp310-cp310-linux_aarch64.whl
+```
+
+That Torch build also requires cuDSS; follow the cuDSS installation subsection
+in the linked Ultralytics guide. The logged device is JetPack 6.2.1 rather than
+the guide's section labeled 6.1, so treat the CUDA verification below as a hard
+gate rather than assuming compatibility.
+
+```bash
+python -c "
+import torch
+print('Torch:', torch.__version__)
+print('Torch CUDA:', torch.version.cuda)
+print('CUDA available:', torch.cuda.is_available())
+print('Device count:', torch.cuda.device_count())
+print('Device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'UNAVAILABLE')
+"
+```
+
+Do not continue until this reports:
+
+```text
+CUDA available: True
+Device: NVIDIA Orin
+```
+
+#### 17.5 Dry-run and install the remaining requirements
+
+The compatible Torch and Torchvision packages must already be installed before
+running this command:
+
+```bash
+python -m pip install --dry-run -r requirements.txt
+```
+
+Stop if the dry run proposes any of these:
+
+```text
+torch-2.13.0
+nvidia-*-cu13
+cuda-toolkit-13
+```
+
+If the resolution is clean:
+
+```bash
+python -m pip install -r requirements.txt
+python -m pip check
+```
+
+Use `python -m pip list --local` to distinguish packages installed inside the
+virtual environment from inherited system packages. Never use `sudo pip` to
+modify JetPack's Python installation.
+
+#### 17.6 Verify the complete stack and retry export
+
+```bash
+python -c "
+import torch
+import tensorrt as trt
+import ultralytics
+
+assert torch.cuda.is_available(), 'CUDA-enabled Jetson Torch is not working'
+
+print('Torch:', torch.__version__)
+print('Torch CUDA:', torch.version.cuda)
+print('GPU:', torch.cuda.get_device_name(0))
+print('TensorRT:', trt.__version__)
+print('Ultralytics:', ultralytics.__version__)
+"
+```
+
+Only after that succeeds, retry FP16 export:
+
+```bash
+python convert_model.py \
+  --pt models/yolov8n_second_buoy.pt \
+  --imgsz 640 \
+  --target tensorrt \
+  --precision fp16 \
+  --output models/yolov8n_second_buoy_640_fp16.engine
+```
+
+After the replacement environment is proven to work, the renamed
+`.aimm-p310-bad-cu13` directory can be removed to recover disk space.
+
+### 18. Common Jetson failures
 
 - **`ModuleNotFoundError: tensorrt`:** recreate the virtual environment with
   `--system-site-packages` and verify the system Python can import TensorRT.

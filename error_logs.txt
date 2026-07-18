@@ -1,0 +1,391 @@
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ pip install -r requirements.txt 
+Collecting ultralytics>=8.3.0
+  Downloading ultralytics-8.4.101-py3-none-any.whl (1.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 10.2 MB/s eta 0:00:00
+Collecting numpy<2.0.0,>=1.23.0
+  Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (14.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.2/14.2 MB 37.7 MB/s eta 0:00:00
+Collecting psutil>=5.9.0
+  Downloading psutil-7.2.2-cp36-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (156 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 157.0/157.0 KB 14.4 MB/s eta 0:00:00
+Collecting pandas>=1.5.0
+  Downloading pandas-2.3.3-cp310-cp310-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl (12.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.1/12.1 MB 49.0 MB/s eta 0:00:00
+Collecting matplotlib>=3.6.0
+  Downloading matplotlib-3.10.9-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (9.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.6/9.6 MB 50.8 MB/s eta 0:00:00
+Collecting opencv-python-headless>=4.8.0
+  Downloading opencv_python_headless-5.0.0.93-cp37-abi3-manylinux_2_28_aarch64.whl (39.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.6/39.6 MB 37.3 MB/s eta 0:00:00
+Collecting onnx>=1.14.0
+  Downloading onnx-1.22.0-cp310-cp310-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl (18.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.9/18.9 MB 47.8 MB/s eta 0:00:00
+Collecting onnxslim>=0.1.50
+  Downloading onnxslim-0.1.94-py3-none-any.whl (238 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 238.4/238.4 KB 20.6 MB/s eta 0:00:00
+Collecting opencv-python!=4.13.0.90,>=4.6.0
+  Downloading opencv_python-5.0.0.93-cp37-abi3-manylinux_2_28_aarch64.whl (49.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.8/49.8 MB 34.2 MB/s eta 0:00:00
+Collecting torchvision>=0.9.0
+  Downloading torchvision-0.28.0-cp310-cp310-manylinux_2_28_aarch64.whl (7.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.8/7.8 MB 34.2 MB/s eta 0:00:00
+Requirement already satisfied: pyyaml>=5.3.1 in /usr/lib/python3/dist-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (5.4.1)
+Collecting nvidia-ml-py>=12.0.0
+  Downloading nvidia_ml_py-13.610.43-py3-none-any.whl (53 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.2/53.2 KB 8.5 MB/s eta 0:00:00
+Collecting filelock>=3.16.1
+  Downloading filelock-3.31.0-py3-none-any.whl (96 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 96.1/96.1 KB 10.9 MB/s eta 0:00:00
+Collecting torch>=1.8.0
+  Downloading torch-2.13.0-cp310-cp310-manylinux_2_28_aarch64.whl (427.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 427.2/427.2 MB 8.7 MB/s eta 0:00:00
+Requirement already satisfied: requests>=2.23.0 in /usr/lib/python3/dist-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (2.25.1)
+Collecting polars>=0.20.0
+  Downloading polars-1.42.1-py3-none-any.whl (837 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.6/837.6 KB 44.9 MB/s eta 0:00:00
+Requirement already satisfied: pillow>=7.1.2 in /usr/lib/python3/dist-packages (from ultralytics>=8.3.0->-r requirements.txt (line 10)) (9.0.1)
+Collecting ultralytics-thop>=2.0.18
+  Downloading ultralytics_thop-2.0.20-py3-none-any.whl (28 kB)
+Collecting python-dateutil>=2.8.2
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.9/229.9 KB 28.4 MB/s eta 0:00:00
+Collecting tzdata>=2022.7
+  Downloading tzdata-2026.3-py2.py3-none-any.whl (348 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 348.2/348.2 KB 34.6 MB/s eta 0:00:00
+Requirement already satisfied: pytz>=2020.1 in /usr/lib/python3/dist-packages (from pandas>=1.5.0->-r requirements.txt (line 13)) (2022.1)
+Requirement already satisfied: fonttools>=4.22.0 in /usr/lib/python3/dist-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (4.29.1)
+Collecting contourpy>=1.0.1
+  Downloading contourpy-1.3.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (312 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 312.1/312.1 KB 27.1 MB/s eta 0:00:00
+Requirement already satisfied: kiwisolver>=1.3.1 in /usr/lib/python3/dist-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (1.3.2)
+Requirement already satisfied: packaging>=20.0 in /usr/lib/python3/dist-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (21.3)
+Requirement already satisfied: cycler>=0.10 in /usr/lib/python3/dist-packages (from matplotlib>=3.6.0->-r requirements.txt (line 14)) (0.11.0)
+Collecting pyparsing>=3
+  Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 122.8/122.8 KB 14.0 MB/s eta 0:00:00
+Collecting opencv-python-headless>=4.8.0
+  Downloading opencv_python_headless-4.13.0.92-cp37-abi3-manylinux_2_28_aarch64.whl (35.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.0/35.0 MB 38.7 MB/s eta 0:00:00
+  Downloading opencv_python_headless-4.13.0.90-cp37-abi3-manylinux_2_28_aarch64.whl (36.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 36.6/36.6 MB 39.3 MB/s eta 0:00:00
+  Downloading opencv_python_headless-4.12.0.88-cp37-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (33.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 33.1/33.1 MB 38.9 MB/s eta 0:00:00
+  Downloading opencv_python_headless-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (29.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29.5/29.5 MB 41.3 MB/s eta 0:00:00
+Collecting typing_extensions>=4.15.0
+  Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 KB 6.5 MB/s eta 0:00:00
+Collecting protobuf>=4.25.1
+  Downloading protobuf-7.35.1-cp310-abi3-manylinux2014_aarch64.whl (328 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 328.8/328.8 KB 29.5 MB/s eta 0:00:00
+Collecting ml_dtypes>=0.5.4
+  Downloading ml_dtypes-0.5.4-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (5.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.1/5.1 MB 50.7 MB/s eta 0:00:00
+Collecting sympy>=1.13.1
+  Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 44.2 MB/s eta 0:00:00
+Requirement already satisfied: colorama in /usr/lib/python3/dist-packages (from onnxslim>=0.1.50->-r requirements.txt (line 19)) (0.4.4)
+Collecting opencv-python!=4.13.0.90,>=4.6.0
+  Downloading opencv_python-4.13.0.92-cp37-abi3-manylinux_2_28_aarch64.whl (46.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 46.7/46.7 MB 33.8 MB/s eta 0:00:00
+  Downloading opencv_python-4.12.0.88-cp37-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (45.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.9/45.9 MB 35.0 MB/s eta 0:00:00
+  Downloading opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (42.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.2/42.2 MB 35.7 MB/s eta 0:00:00
+Collecting polars-runtime-32==1.42.1
+  Downloading polars_runtime_32-1.42.1-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (51.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 51.4/51.4 MB 33.4 MB/s eta 0:00:00
+Requirement already satisfied: six>=1.5 in /usr/lib/python3/dist-packages (from python-dateutil>=2.8.2->pandas>=1.5.0->-r requirements.txt (line 13)) (1.16.0)
+Collecting mpmath<1.4,>=1.1.0
+  Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 KB 43.5 MB/s eta 0:00:00
+Collecting fsspec>=0.8.5
+  Downloading fsspec-2026.6.0-py3-none-any.whl (203 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.9/203.9 KB 26.1 MB/s eta 0:00:00
+Collecting nvidia-cusparselt-cu13==0.8.1
+  Downloading nvidia_cusparselt_cu13-0.8.1-py3-none-manylinux2014_aarch64.whl (221.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 221.1/221.1 MB 13.7 MB/s eta 0:00:00
+Collecting triton==3.7.1
+  Downloading triton-3.7.1-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (184.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 184.6/184.6 MB 16.3 MB/s eta 0:00:00
+Collecting cuda-bindings<14,>=13.0.3
+  Downloading cuda_bindings-13.3.1-cp310-cp310-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl (6.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.1/6.1 MB 63.3 MB/s eta 0:00:00
+Collecting nvidia-nccl-cu13==2.29.7
+  Downloading nvidia_nccl_cu13-2.29.7-py3-none-manylinux_2_18_aarch64.whl (206.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 206.0/206.0 MB 15.2 MB/s eta 0:00:00
+Collecting networkx>=2.5.1
+  Downloading networkx-3.4.2-py3-none-any.whl (1.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 45.7 MB/s eta 0:00:00
+Collecting nvidia-nvshmem-cu13==3.4.5
+  Downloading nvidia_nvshmem_cu13-3.4.5-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (60.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.2/60.2 MB 31.5 MB/s eta 0:00:00
+Collecting setuptools>=77.0.3
+  Downloading setuptools-83.0.0-py3-none-any.whl (1.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.0/1.0 MB 46.4 MB/s eta 0:00:00
+Collecting cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3
+  Downloading cuda_toolkit-13.0.3.0-py2.py3-none-any.whl (2.5 kB)
+Collecting nvidia-cudnn-cu13==9.20.0.48
+  Downloading nvidia_cudnn_cu13-9.20.0.48-py3-none-manylinux_2_27_aarch64.whl (444.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 444.6/444.6 MB 8.8 MB/s eta 0:00:00
+Collecting jinja2
+  Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 KB 20.6 MB/s eta 0:00:00
+Collecting nvidia-cuda-nvrtc==13.0.88.*
+  Downloading nvidia_cuda_nvrtc-13.0.88-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (43.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.0/43.0 MB 36.1 MB/s eta 0:00:00
+Collecting nvidia-cublas==13.1.1.3.*
+  Downloading nvidia_cublas-13.1.1.3-py3-none-manylinux_2_27_aarch64.whl (542.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 542.8/542.8 MB 6.9 MB/s eta 0:00:00
+Collecting nvidia-nvjitlink<14,>=13.0.88
+  Downloading nvidia_nvjitlink-13.3.33-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (39.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.2/39.2 MB 36.7 MB/s eta 0:00:00
+Collecting nvidia-cusparse==12.6.3.3.*
+  Downloading nvidia_cusparse-12.6.3.3-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (162.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 162.2/162.2 MB 17.0 MB/s eta 0:00:00
+Collecting nvidia-cusolver==12.0.4.66.*
+  Downloading nvidia_cusolver-12.0.4.66-py3-none-manylinux_2_27_aarch64.whl (223.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 223.5/223.5 MB 14.0 MB/s eta 0:00:00
+Collecting nvidia-cuda-cupti==13.0.85.*
+  Downloading nvidia_cuda_cupti-13.0.85-py3-none-manylinux_2_25_aarch64.whl (10.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.3/10.3 MB 47.3 MB/s eta 0:00:00
+Collecting nvidia-cufft==12.0.0.61.*
+  Downloading nvidia_cufft-12.0.0.61-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (214.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 214.1/214.1 MB 14.5 MB/s eta 0:00:00
+Collecting nvidia-nvtx==13.0.85.*
+  Downloading nvidia_nvtx-13.0.85-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (148 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 148.9/148.9 KB 21.1 MB/s eta 0:00:00
+Collecting nvidia-cufile==1.15.1.6.*
+  Downloading nvidia_cufile-1.15.1.6-py3-none-manylinux_2_27_aarch64.whl (1.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 54.6 MB/s eta 0:00:00
+Collecting nvidia-curand==10.4.0.35.*
+  Downloading nvidia_curand-10.4.0.35-py3-none-manylinux_2_27_aarch64.whl (62.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.0/62.0 MB 30.3 MB/s eta 0:00:00
+Collecting nvidia-cuda-runtime==13.0.96.*
+  Downloading nvidia_cuda_runtime-13.0.96-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (2.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 46.8 MB/s eta 0:00:00
+Collecting cuda-pathfinder>=1.4.2
+  Downloading cuda_pathfinder-1.5.6-py3-none-any.whl (52 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.0/53.0 KB 7.4 MB/s eta 0:00:00
+Requirement already satisfied: MarkupSafe>=2.0 in /usr/lib/python3/dist-packages (from jinja2->torch>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 10)) (2.0.1)
+Installing collected packages: nvidia-ml-py, nvidia-cusparselt-cu13, mpmath, cuda-toolkit, tzdata, typing_extensions, triton, sympy, setuptools, python-dateutil, pyparsing, psutil, protobuf, polars-runtime-32, nvidia-nvtx, nvidia-nvshmem-cu13, nvidia-nvjitlink, nvidia-nccl-cu13, nvidia-curand, nvidia-cufile, nvidia-cuda-runtime, nvidia-cuda-nvrtc, nvidia-cuda-cupti, numpy, networkx, jinja2, fsspec, filelock, cuda-pathfinder, polars, pandas, opencv-python-headless, opencv-python, nvidia-cusparse, nvidia-cufft, nvidia-cublas, ml_dtypes, cuda-bindings, contourpy, onnx, nvidia-cusolver, nvidia-cudnn-cu13, matplotlib, onnxslim, torch, ultralytics-thop, torchvision, ultralytics
+  Attempting uninstall: mpmath
+    Found existing installation: mpmath 0.0.0
+    Not uninstalling mpmath at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'mpmath'. No files were found to uninstall.
+  Attempting uninstall: sympy
+    Found existing installation: sympy 1.9
+    Not uninstalling sympy at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'sympy'. No files were found to uninstall.
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 59.6.0
+    Uninstalling setuptools-59.6.0:
+      Successfully uninstalled setuptools-59.6.0
+  Attempting uninstall: python-dateutil
+    Found existing installation: python-dateutil 2.8.1
+    Not uninstalling python-dateutil at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'python-dateutil'. No files were found to uninstall.
+  Attempting uninstall: pyparsing
+    Found existing installation: pyparsing 2.4.7
+    Not uninstalling pyparsing at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'pyparsing'. No files were found to uninstall.
+  Attempting uninstall: protobuf
+    Found existing installation: protobuf 3.12.4
+    Not uninstalling protobuf at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'protobuf'. No files were found to uninstall.
+  Attempting uninstall: numpy
+    Found existing installation: numpy 1.21.5
+    Not uninstalling numpy at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'numpy'. No files were found to uninstall.
+  Attempting uninstall: pandas
+    Found existing installation: pandas 1.3.5
+    Not uninstalling pandas at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'pandas'. No files were found to uninstall.
+  Attempting uninstall: matplotlib
+    Found existing installation: matplotlib 3.5.1
+    Not uninstalling matplotlib at /usr/lib/python3/dist-packages, outside environment /home/aim-miu/development/.aimm-p310
+    Can't uninstall 'matplotlib'. No files were found to uninstall.
+Successfully installed contourpy-1.3.2 cuda-bindings-13.3.1 cuda-pathfinder-1.5.6 cuda-toolkit-13.0.3.0 filelock-3.31.0 fsspec-2026.6.0 jinja2-3.1.6 matplotlib-3.10.9 ml_dtypes-0.5.4 mpmath-1.3.0 networkx-3.4.2 numpy-1.26.4 nvidia-cublas-13.1.1.3 nvidia-cuda-cupti-13.0.85 nvidia-cuda-nvrtc-13.0.88 nvidia-cuda-runtime-13.0.96 nvidia-cudnn-cu13-9.20.0.48 nvidia-cufft-12.0.0.61 nvidia-cufile-1.15.1.6 nvidia-curand-10.4.0.35 nvidia-cusolver-12.0.4.66 nvidia-cusparse-12.6.3.3 nvidia-cusparselt-cu13-0.8.1 nvidia-ml-py-13.610.43 nvidia-nccl-cu13-2.29.7 nvidia-nvjitlink-13.3.33 nvidia-nvshmem-cu13-3.4.5 nvidia-nvtx-13.0.85 onnx-1.22.0 onnxslim-0.1.94 opencv-python-4.11.0.86 opencv-python-headless-4.11.0.86 pandas-2.3.3 polars-1.42.1 polars-runtime-32-1.42.1 protobuf-7.35.1 psutil-7.2.2 pyparsing-3.3.2 python-dateutil-2.9.0.post0 setuptools-83.0.0 sympy-1.14.0 torch-2.13.0 torchvision-0.28.0 triton-3.7.1 typing_extensions-4.16.0 tzdata-2026.3 ultralytics-8.4.101 ultralytics-thop-2.0.20
+
+
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ cat /proc/device-tree/model
+NVIDIA Jetson AGX Orin Developer Kit(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ dpkg -l | grep -E 'nvidia-jetpack|tensorrt|cdpkg -l | grep -E 'nvidia-jetpack|tensorrt|cuda|cudnn'
+ii  cuda-cccl-12-6                               12.6.37-1                                   arm64        CUDA CCCL
+ii  cuda-command-line-tools-12-6                 12.6.11-1                                   arm64        CUDA command-line tools
+ii  cuda-compiler-12-6                           12.6.11-1                                   arm64        CUDA compiler
+ii  cuda-crt-12-6                                12.6.68-1                                   arm64        CUDA crt
+ii  cuda-cudart-12-6                             12.6.68-1                                   arm64        CUDA Runtime native Libraries
+ii  cuda-cudart-dev-12-6                         12.6.68-1                                   arm64        CUDA Runtime native dev links, headers
+ii  cuda-cuobjdump-12-6                          12.6.68-1                                   arm64        CUDA cuobjdump
+ii  cuda-cupti-12-6                              12.6.68-1                                   arm64        CUDA profiling tools runtime libs.
+ii  cuda-cupti-dev-12-6                          12.6.68-1                                   arm64        CUDA profiling tools interface.
+ii  cuda-cuxxfilt-12-6                           12.6.68-1                                   arm64        CUDA cuxxfilt
+ii  cuda-documentation-12-6                      12.6.68-1                                   arm64        CUDA documentation
+ii  cuda-driver-dev-12-6                         12.6.68-1                                   arm64        CUDA Driver native dev stub library
+ii  cuda-gdb-12-6                                12.6.68-1                                   arm64        CUDA-GDB
+ii  cuda-libraries-12-6                          12.6.11-1                                   arm64        CUDA Libraries 12.6 meta-package
+ii  cuda-libraries-dev-12-6                      12.6.11-1                                   arm64        CUDA Libraries 12.6 development meta-package
+ii  cuda-nsight-compute-12-6                     12.6.11-1                                   arm64        NVIDIA Nsight Compute
+ii  cuda-nvcc-12-6                               12.6.68-1                                   arm64        CUDA nvcc
+ii  cuda-nvdisasm-12-6                           12.6.68-1                                   arm64        CUDA disassembler
+ii  cuda-nvml-dev-12-6                           12.6.68-1                                   arm64        NVML native dev links, headers
+ii  cuda-nvprune-12-6                            12.6.68-1                                   arm64        CUDA nvprune
+ii  cuda-nvrtc-12-6                              12.6.68-1                                   arm64        NVRTC native runtime libraries
+ii  cuda-nvrtc-dev-12-6                          12.6.68-1                                   arm64        NVRTC native dev links, headers
+ii  cuda-nvtx-12-6                               12.6.68-1                                   arm64        NVIDIA Tools Extension
+ii  cuda-nvvm-12-6                               12.6.68-1                                   arm64        CUDA nvvm
+ii  cuda-profiler-api-12-6                       12.6.68-1                                   arm64        CUDA Profiler API
+ii  cuda-runtime-12-6                            12.6.11-1                                   arm64        CUDA Runtime 12.6 meta-package
+ii  cuda-sanitizer-12-6                          12.6.68-1                                   arm64        CUDA Sanitizer
+ii  cuda-toolkit-12-6                            12.6.11-1                                   arm64        CUDA Toolkit 12.6 meta-package
+ii  cuda-toolkit-12-6-config-common              12.6.68-1                                   all          Common config package for CUDA Toolkit 12.6.
+ii  cuda-toolkit-12-config-common                12.6.68-1                                   all          Common config package for CUDA Toolkit 12.
+ii  cuda-toolkit-config-common                   12.6.68-1                                   all          Common config package for CUDA Toolkit.
+ii  cuda-tools-12-6                              12.6.11-1                                   arm64        CUDA Tools meta-package
+ii  cuda-visual-tools-12-6                       12.6.11-1                                   arm64        CUDA visual tools
+ii  libcudnn9-cuda-12                            9.3.0.75-1                                  arm64        cuDNN runtime libraries for CUDA 12.6
+ii  libcudnn9-dev-cuda-12                        9.3.0.75-1                                  arm64        cuDNN development headers and symlinks for CUDA 12.6
+ii  libcudnn9-samples                            9.3.0.75-1                                  all          cuDNN samples
+ii  libnvinfer-bin                               10.3.0.30-1+cuda12.5                        arm64        TensorRT binaries
+ii  libnvinfer-dev                               10.3.0.30-1+cuda12.5                        arm64        TensorRT development libraries
+ii  libnvinfer-dispatch-dev                      10.3.0.30-1+cuda12.5                        arm64        TensorRT development dispatch runtime libraries
+ii  libnvinfer-dispatch10                        10.3.0.30-1+cuda12.5                        arm64        TensorRT dispatch runtime library
+ii  libnvinfer-headers-dev                       10.3.0.30-1+cuda12.5                        arm64        TensorRT development headers
+ii  libnvinfer-headers-plugin-dev                10.3.0.30-1+cuda12.5                        arm64        TensorRT plugin headers
+ii  libnvinfer-lean-dev                          10.3.0.30-1+cuda12.5                        arm64        TensorRT lean runtime libraries
+ii  libnvinfer-lean10                            10.3.0.30-1+cuda12.5                        arm64        TensorRT lean runtime library
+ii  libnvinfer-plugin-dev                        10.3.0.30-1+cuda12.5                        arm64        TensorRT plugin libraries
+ii  libnvinfer-plugin10                          10.3.0.30-1+cuda12.5                        arm64        TensorRT plugin libraries
+ii  libnvinfer-samples                           10.3.0.30-1+cuda12.5                        all          TensorRT samples
+ii  libnvinfer-vc-plugin-dev                     10.3.0.30-1+cuda12.5                        arm64        TensorRT vc-plugin library
+ii  libnvinfer-vc-plugin10                       10.3.0.30-1+cuda12.5                        arm64        TensorRT vc-plugin library
+ii  libnvinfer10                                 10.3.0.30-1+cuda12.5                        arm64        TensorRT runtime libraries
+ii  libnvonnxparsers-dev                         10.3.0.30-1+cuda12.5                        arm64        TensorRT ONNX libraries
+ii  libnvonnxparsers10                           10.3.0.30-1+cuda12.5                        arm64        TensorRT ONNX libraries
+ii  nvidia-l4t-cuda                              36.4.4-20250616085344                       arm64        NVIDIA CUDA Package
+ii  nvidia-l4t-cuda-utils                        36.4.4-20250616085344                       arm64        NVIDIA CUDA utilities
+ii  nvidia-l4t-cudadebuggingsupport              12.6-34622040.0                             arm64        NVIDIA CUDA Debugger Support Package
+ii  python3-libnvinfer                           10.3.0.30-1+cuda12.5                        arm64        Python 3 bindings for TensorRT standard runtime
+ii  python3-libnvinfer-dev                       10.3.0.30-1+cuda12.5                        arm64        Python 3 development package for TensorRT standard runtime
+ii  python3-libnvinfer-dispatch                  10.3.0.30-1+cuda12.5                        arm64        Python 3 bindings for TensorRT dispatch runtime
+ii  python3-libnvinfer-lean                      10.3.0.30-1+cuda12.5                        arm64        Python 3 bindings for TensorRT lean runtime
+ii  tensorrt                                     10.3.0.30-1+cuda12.5                        arm64        Meta package for TensorRT
+ii  tensorrt-libs                                10.3.0.30-1+cuda12.5                        arm64        Meta package for TensorRT runtime libraries
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ python3 -c "import torch, ultralytics, tensorrt as trt; print(torch.__version__, torch.cuda.is_available(), ultralytics.__version__, trt.__version__)"
+
+Creating new Ultralytics Settings v0.0.6 file ✅ 
+View Ultralytics Settings with 'yolo settings' or at '/home/aim-miu/.config/Ultralytics/settings.json'
+Update Settings with 'yolo settings key=value', i.e. 'yolo settings runs_dir=path/to/dir'. For help see https://docs.ultralytics.com/quickstart/#ultralytics-settings.
+/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/torch/cuda/__init__.py:188: UserWarning: CUDA initialization: The NVIDIA driver on your system is too old (found version 12060). Please update your GPU driver by downloading and installing a new version from the URL: http://www.nvidia.com/Download/index.aspx Alternatively, go to: https://pytorch.org to install a PyTorch version that has been compiled with your version of the CUDA driver. (Triggered internally at /__w/pytorch/pytorch/c10/cuda/CUDAFunctions.cpp:119.)
+  return torch._C._cuda_getDeviceCount() > 0
+2.13.0+cu130 False 8.4.101 10.3.0
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ 
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ which stress-ng
+which tegrastats
+tegrastats --interval 1000
+/usr/bin/tegrastats
+07-18-2026 15:49:17 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [10%@1497,28%@1497,10%@1497,2%@1497,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,14%@729,0%@729] GR3D_FREQ 36% cpu@44.281C soc2@41.968C soc0@41.906C gpu@40.281C tj@44.281C soc1@41.75C VDD_GPU_SOC 3591mW/3591mW VDD_CPU_CV 399mW/399mW VIN_SYS_5V0 4815mW/4815mW
+07-18-2026 15:49:18 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [1%@729,1%@729,4%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,1%@729,5%@729,0%@729] GR3D_FREQ 0% cpu@44.031C soc2@41.937C soc0@41.906C gpu@40.468C tj@44.031C soc1@41.812C VDD_GPU_SOC 3192mW/3392mW VDD_CPU_CV 0mW/200mW VIN_SYS_5V0 4715mW/4765mW
+07-18-2026 15:49:19 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [2%@1497,0%@1497,0%@1497,0%@1497,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,2%@729,0%@729] GR3D_FREQ 0% cpu@44.281C soc2@41.968C soc0@42C gpu@40.718C tj@44.281C soc1@41.812C VDD_GPU_SOC 3988mW/3590mW VDD_CPU_CV 0mW/133mW VIN_SYS_5V0 4614mW/4715mW
+07-18-2026 15:49:20 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [0%@729,0%@729,0%@729,1%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729] GR3D_FREQ 0% cpu@44.437C soc2@41.937C soc0@41.812C gpu@40.343C tj@44.437C soc1@41.812C VDD_GPU_SOC 3591mW/3591mW VDD_CPU_CV 0mW/100mW VIN_SYS_5V0 4614mW/4690mW
+07-18-2026 15:49:21 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [1%@729,1%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729] GR3D_FREQ 0% cpu@44.125C soc2@41.937C soc0@41.812C gpu@40.406C tj@44.125C soc1@41.875C VDD_GPU_SOC 3990mW/3670mW VDD_CPU_CV 0mW/80mW VIN_SYS_5V0 4715mW/4695mW
+07-18-2026 15:49:22 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [1%@1497,2%@1497,2%@1497,1%@1497,0%@1497,0%@1497,0%@1497,0%@1497,0%@729,0%@729,0%@729,0%@729] GR3D_FREQ 0% cpu@44.156C soc2@41.968C soc0@42C gpu@40.625C tj@44.156C soc1@41.75C VDD_GPU_SOC 4387mW/3790mW VDD_CPU_CV 0mW/67mW VIN_SYS_5V0 4715mW/4698mW
+07-18-2026 15:49:23 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [0%@1497,0%@1497,1%@1497,0%@1497,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729] GR3D_FREQ 0% cpu@44.281C soc2@41.843C soc0@41.843C gpu@40.718C tj@44.281C soc1@41.812C VDD_GPU_SOC 3591mW/3761mW VDD_CPU_CV 0mW/57mW VIN_SYS_5V0 4614mW/4686mW
+07-18-2026 15:49:24 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [0%@729,0%@729,2%@729,1%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729] GR3D_FREQ 0% cpu@44.062C soc2@42.031C soc0@41.875C gpu@40.406C tj@44.062C soc1@41.843C VDD_GPU_SOC 3990mW/3790mW VDD_CPU_CV 0mW/50mW VIN_SYS_5V0 4715mW/4690mW
+07-18-2026 15:49:25 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [0%@1497,0%@1497,0%@1497,0%@1497,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729] GR3D_FREQ 0% cpu@44.156C soc2@42C soc0@41.937C gpu@40.281C tj@44.156C soc1@41.937C VDD_GPU_SOC 3591mW/3768mW VDD_CPU_CV 0mW/44mW VIN_SYS_5V0 4614mW/4681mW
+07-18-2026 15:49:26 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [0%@729,0%@729,0%@729,1%@729,0%@729,0%@729,0%@729,0%@729,1%@729,0%@729,0%@729,0%@729] GR3D_FREQ 0% cpu@44.218C soc2@41.937C soc0@41.968C gpu@40.218C tj@44.218C soc1@41.843C VDD_GPU_SOC 3192mW/3710mW VDD_CPU_CV 0mW/40mW VIN_SYS_5V0 4614mW/4675mW
+07-18-2026 15:49:27 RAM 3119/62841MB (lfb 33x4MB) SWAP 0/31420MB (cached 0MB) CPU [1%@729,1%@729,1%@729,1%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,0%@729,1%@729] GR3D_FREQ 0% cpu@44.093C soc2@41.968C soc0@41.843C gpu@40.312C tj@44.093C soc1@41.812C VDD_GPU_SOC 3990mW/3736mW VDD_CPU_CV 0mW/36mW VIN_SYS_5V0 4715mW/4678mW
+^C
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ sudo nvpmodel -q --verbose
+[sudo] password for aim-miu: 
+NVPM VERB: Config file: /etc/nvpmodel.conf
+NVPM VERB: parsing done for /etc/nvpmodel.conf
+NVPM VERB: Current mode: NV Power Mode: MODE_50W
+3
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_0: PATH /sys/devices/system/cpu/cpu0/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_1: PATH /sys/devices/system/cpu/cpu1/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_2: PATH /sys/devices/system/cpu/cpu2/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_3: PATH /sys/devices/system/cpu/cpu3/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_4: PATH /sys/devices/system/cpu/cpu4/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_5: PATH /sys/devices/system/cpu/cpu5/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_6: PATH /sys/devices/system/cpu/cpu6/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_7: PATH /sys/devices/system/cpu/cpu7/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_8: PATH /sys/devices/system/cpu/cpu8/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_9: PATH /sys/devices/system/cpu/cpu9/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_10: PATH /sys/devices/system/cpu/cpu10/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM CPU_ONLINE: ARG CORE_11: PATH /sys/devices/system/cpu/cpu11/online: REAL_VAL: 1 CONF_VAL: 1
+NVPM VERB: PARAM TPC_POWER_GATING: ARG TPC_PG_MASK: PATH /sys/devices/platform/gpu.0/tpc_pg_mask: REAL_VAL: 0 CONF_VAL: 0
+NVPM VERB: PARAM GPU_POWER_CONTROL_ENABLE: ARG GPU_PWR_CNTL_EN: PATH /sys/devices/platform/gpu.0/power/control: REAL_VAL: auto CONF_VAL: on
+NVPM VERB: PARAM CPU_A78_0: ARG MIN_FREQ: PATH /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq: REAL_VAL: 729600 CONF_VAL: 729600
+NVPM VERB: PARAM CPU_A78_0: ARG MAX_FREQ: PATH /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: REAL_VAL: 1497600 CONF_VAL: 1497600
+NVPM VERB: PARAM CPU_A78_1: ARG MIN_FREQ: PATH /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq: REAL_VAL: 729600 CONF_VAL: 729600
+NVPM VERB: PARAM CPU_A78_1: ARG MAX_FREQ: PATH /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq: REAL_VAL: 1497600 CONF_VAL: 1497600
+NVPM VERB: PARAM CPU_A78_2: ARG MIN_FREQ: PATH /sys/devices/system/cpu/cpu8/cpufreq/scaling_min_freq: REAL_VAL: 729600 CONF_VAL: 729600
+NVPM VERB: PARAM CPU_A78_2: ARG MAX_FREQ: PATH /sys/devices/system/cpu/cpu8/cpufreq/scaling_max_freq: REAL_VAL: 1497600 CONF_VAL: 1497600
+NVPM VERB: PARAM GPU: ARG MIN_FREQ: PATH /sys/devices/platform/17000000.gpu/devfreq_dev/min_freq: REAL_VAL: 306000000 CONF_VAL: 0
+NVPM VERB: PARAM GPU: ARG MAX_FREQ: PATH /sys/devices/platform/17000000.gpu/devfreq_dev/max_freq: REAL_VAL: 816000000 CONF_VAL: 816000000
+NVPM VERB: PARAM GPU_POWER_CONTROL_DISABLE: ARG GPU_PWR_CNTL_DIS: PATH /sys/devices/platform/gpu.0/power/control: REAL_VAL: auto CONF_VAL: auto
+NVPM VERB: PARAM EMC: ARG MAX_FREQ: PATH /sys/kernel/nvpmodel_clk_cap/emc: REAL_VAL: 3199000000 CONF_VAL: 9223372036854775807
+NVPM VERB: PARAM DLA0_CORE: ARG MAX_FREQ: PATH /sys/devices/platform/bus@0/13e00000.host1x/15880000.nvdla0/clk_cap/dla0_core: REAL_VAL: 1369600000 CONF_VAL: 1369600000
+NVPM VERB: PARAM DLA1_CORE: ARG MAX_FREQ: PATH /sys/devices/platform/bus@0/13e00000.host1x/158c0000.nvdla1/clk_cap/dla1_core: REAL_VAL: 1369600000 CONF_VAL: 1369600000
+NVPM VERB: PARAM DLA0_FALCON: ARG MAX_FREQ: PATH /sys/devices/platform/bus@0/13e00000.host1x/15880000.nvdla0/clk_cap/dla0_falcon: REAL_VAL: 729600000 CONF_VAL: 729600000
+NVPM VERB: PARAM DLA1_FALCON: ARG MAX_FREQ: PATH /sys/devices/platform/bus@0/13e00000.host1x/158c0000.nvdla1/clk_cap/dla1_falcon: REAL_VAL: 729600000 CONF_VAL: 729600000
+NVPM VERB: PARAM PVA0_VPS: ARG MAX_FREQ: PATH /sys/devices/platform/bus@0/13e00000.host1x/16000000.pva0/clk_cap/pva0_vps: REAL_VAL: 704000000 CONF_VAL: 704000000
+NVPM VERB: PARAM PVA0_AXI: ARG MAX_FREQ: PATH /sys/devices/platform/bus@0/13e00000.host1x/16000000.pva0/clk_cap/pva0_cpu_axi: REAL_VAL: 486400000 CONF_VAL: 486400000
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ sudo nvpmodel -m 0
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ sudo jetson_clocks
+sudo jetson_clocks --show
+SOC family:tegra234  Machine:NVIDIA Jetson AGX Orin Developer Kit
+Online CPUs: 0-11
+cpu0:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu1:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu2:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu3:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu4:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu5:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu6:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu7:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu8:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu9:  Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu10: Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+cpu11: Online=1 Governor=schedutil MinFreq=2201600 MaxFreq=2201600 CurrentFreq=2201600 IdleStates: WFI=0 c7=0 
+GPU MinFreq=1300500000 MaxFreq=1300500000 CurrentFreq=1300500000
+Active GPU TPCs: 8
+EMC MinFreq=204000000 MaxFreq=3199000000 CurrentFreq=3199000000 FreqOverride=1
+DLA0_CORE:   Online=1 MinFreq=0 MaxFreq=1600000000 CurrentFreq=1600000000
+DLA0_FALCON: Online=1 MinFreq=0 MaxFreq=844800000 CurrentFreq=844800000
+DLA1_CORE:   Online=1 MinFreq=0 MaxFreq=1600000000 CurrentFreq=1600000000
+DLA1_FALCON: Online=1 MinFreq=0 MaxFreq=844800000 CurrentFreq=844800000
+PVA0_VPS0: Online=1 MinFreq=0 MaxFreq=1369600000 CurrentFreq=1369600000
+PVA0_AXI:  Online=1 MinFreq=0 MaxFreq=985600000 CurrentFreq=985600000
+FAN Dynamic Speed Control=nvfancontrol hwmon0_pwm1=52
+NV Power Mode: MAXN
+
+
+(.aimm-p310) aim-miu@ubuntu:~/development/benchmarking/cross-platform-yolo-benchmarking$ python3 convert_model.py --pt models/yolov8n_second_buoy.pt --imgsz 640 \
+  --target tensorrt --precision fp16 \
+  --output models/yolov8n_second_buoy_640_fp16.engine
+/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+WARNING ⚠️ TensorRT requires GPU export, automatically assigning device=0
+/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/torch/cuda/__init__.py:188: UserWarning: CUDA initialization: The NVIDIA driver on your system is too old (found version 12060). Please update your GPU driver by downloading and installing a new version from the URL: http://www.nvidia.com/Download/index.aspx Alternatively, go to: https://pytorch.org to install a PyTorch version that has been compiled with your version of the CUDA driver. (Triggered internally at /__w/pytorch/pytorch/c10/cuda/CUDAFunctions.cpp:119.)
+  return torch._C._cuda_getDeviceCount() > 0
+Ultralytics 8.4.101 🚀 Python-3.10.12 torch-2.13.0+cu130 
+Traceback (most recent call last):
+  File "/home/aim-miu/development/benchmarking/cross-platform-yolo-benchmarking/convert_model.py", line 99, in <module>
+    main()
+  File "/home/aim-miu/development/benchmarking/cross-platform-yolo-benchmarking/convert_model.py", line 83, in main
+    out = model.export(**export_args)
+  File "/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/ultralytics/engine/model.py", line 722, in export
+    return Exporter(overrides=args, _callbacks=self.callbacks)(model=self.model)
+  File "/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/ultralytics/engine/exporter.py", line 581, in __call__
+    self.device = select_device("cpu" if self.args.device is None else self.args.device)
+  File "/home/aim-miu/development/.aimm-p310/lib/python3.10/site-packages/ultralytics/utils/torch_utils.py", line 275, in select_device
+    raise ValueError(
+ValueError: Invalid CUDA 'device=0' requested. Use 'device=cpu' or pass valid CUDA device(s) if available, i.e. 'device=0' or 'device=0,1,2,3' for Multi-GPU.
+
+torch.cuda.is_available(): False
+torch.cuda.device_count(): 1
+os.environ['CUDA_VISIBLE_DEVICES']: None
+
+
